@@ -11,6 +11,7 @@ import (
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/colorlookups/dummy"
 	"github.com/coral/nocube/pkg/generators/zebra"
+	"github.com/coral/nocube/pkg/utils"
 	"github.com/stojg/vector"
 	"periph.io/x/periph/conn/spi/spireg"
 	"periph.io/x/periph/devices/apa102"
@@ -84,9 +85,9 @@ func main() {
 			var bytes = []byte{}
 			for _, color := range colorRes {
 				bytes = append(bytes, []byte{
-					byte(color.Color[0] * 255),
-					byte(color.Color[1] * 255),
-					byte(color.Color[2] * 255),
+					utils.Clamp255(color.Color[0] * 255),
+					utils.Clamp255(color.Color[1] * 255),
+					utils.Clamp255(color.Color[2] * 255),
 				}...)
 			}
 
@@ -125,7 +126,7 @@ func getLEDs() *apa102.Dev {
 	// Change the option values to see their effects.
 	opts := apa102.DefaultOpts
 	opts.NumPixels = NUM_LEDS
-	opts.Intensity = 25
+	opts.Intensity = 255
 	d, err := apa102.New(s, &opts)
 	if err != nil {
 		log.Fatal(err)
