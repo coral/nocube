@@ -1,6 +1,9 @@
 package pkg
 
-import "github.com/stojg/vector"
+import (
+	"github.com/coral/nocube/pkg/frame"
+	"github.com/stojg/vector"
+)
 
 type ColorLookupParameters struct {
 	Speed float64
@@ -11,5 +14,5 @@ type ColorLookupResult struct {
 }
 
 type ColorLookup interface {
-	Lookup(generatorResults []GeneratorResult, t float64, parameters ColorLookupParameters) []ColorLookupResult
+	Lookup(generatorResults []GeneratorResult, f *frame.F, parameters ColorLookupParameters) []ColorLookupResult
 }

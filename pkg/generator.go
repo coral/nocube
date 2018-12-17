@@ -1,11 +1,6 @@
 package pkg
 
-import "github.com/stojg/vector"
-
-type Pixel struct {
-	Active     bool
-	Coordinate vector.Vector3
-}
+import "github.com/coral/nocube/pkg/frame"
 
 type GeneratorParameters struct {
 	Speed float64
@@ -16,5 +11,5 @@ type GeneratorResult struct {
 }
 
 type Generator interface {
-	Generate(pixels []Pixel, t float64, parameters GeneratorParameters) []GeneratorResult
+	Generate(pixels []Pixel, f *frame.F, parameters GeneratorParameters) []GeneratorResult
 }

@@ -2,6 +2,7 @@ package dummy
 
 import (
 	"github.com/coral/nocube/pkg"
+	"github.com/coral/nocube/pkg/frame"
 	"github.com/stojg/vector"
 )
 
@@ -10,7 +11,7 @@ type Dummy struct {
 
 var _ pkg.ColorLookup = &Dummy{}
 
-func (g *Dummy) Lookup(generatorResults []pkg.GeneratorResult, t float64, parameters pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
+func (g *Dummy) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, parameters pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
 	for _, pixel := range generatorResults {
 		r := 0.0
 		g := 0.0

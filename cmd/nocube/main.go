@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"image/color"
 	"log"
 	"os"
 	"os/signal"
@@ -10,7 +9,8 @@ import (
 
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/colorlookups/dummy"
-	"github.com/coral/nocube/pkg/generators/zebra"
+	"github.com/coral/nocube/pkg/frame"
+	"github.com/coral/nocube/pkg/generators/xd"
 	"github.com/coral/nocube/pkg/utils"
 	"github.com/stojg/vector"
 	"periph.io/x/periph/conn/spi/spireg"
@@ -19,6 +19,7 @@ import (
 )
 
 const NUM_LEDS = 604
+const INTENSITY = 30
 
 var pixelCoordinates []pkg.Pixel
 
@@ -50,17 +51,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	insertCoordinates(9, 80, vector.Vector3{0, 1, 0}, vector.Vector3{0, 0, 0})
-	insertCoordinates(87, 158, vector.Vector3{0, 0, 0}, vector.Vector3{1, 0, 0})
-	insertCoordinates(165, 237, vector.Vector3{1, 0, 0}, vector.Vector3{1, 1, 0})
-	insertCoordinates(246, 305, vector.Vector3{1, 1, 0}, vector.Vector3{1, 1, 1})
-	insertCoordinates(313, 385, vector.Vector3{1, 1, 1}, vector.Vector3{0, 1, 1})
-	insertCoordinates(393, 464, vector.Vector3{0, 1, 1}, vector.Vector3{0, 1, 0})
-	insertCoordinates(472, 544, vector.Vector3{0, 1, 0}, vector.Vector3{1, 1, 0})
+	insertCoordinates(9, 80, vector.Vector3{0, 0.95, 0}, vector.Vector3{0, 0.05, 0})
+	insertCoordinates(87, 158, vector.Vector3{0.05, 0, 0}, vector.Vector3{0.95, 0, 0})
+	insertCoordinates(165, 237, vector.Vector3{1, 0.05, 0}, vector.Vector3{1, 0.95, 0})
+	insertCoordinates(246, 305, vector.Vector3{1, 1, 0.05}, vector.Vector3{1, 1, 0.95})
+	insertCoordinates(313, 385, vector.Vector3{0.95, 1, 1}, vector.Vector3{0.05, 1, 1})
+	insertCoordinates(393, 464, vector.Vector3{0, 1, 0.95}, vector.Vector3{0, 1, 0.05})
+	insertCoordinates(472, 544, vector.Vector3{0.05, 1, 0}, vector.Vector3{0.95, 1, 0})
 
 	d := getLEDs()
 
-	const duration = 50 * time.Millisecond
+	const duration = 5 * time.Millisecond
 
 	ticker := time.NewTicker(duration)
 	stopTicker := make(chan bool)
@@ -72,15 +73,35 @@ func main() {
 		}
 	}()
 
-	zebra := zebra.Zebra{}
+	zebra := xd.Xd{}
 	dummy := dummy.Dummy{}
 
+	t2 := time.NewTicker(1 * time.Second)
+
+	xd := 0
+
+	go func() {
+		for {
+			select {
+			case <-t2.C:
+				fmt.Println("xd: ", xd)
+				xd = 0
+
+			case <-stopTicker:
+				return
+			}
+		}
+	}()
+
 	var t float64
+	frame := frame.New()
+	frame.SetBeat(60.0/30.0, 0)
 	for {
 		select {
 		case <-ticker.C:
-			res := zebra.Generate(pixelCoordinates, t, pkg.GeneratorParameters{})
-			colorRes := dummy.Lookup(res, t, pkg.ColorLookupParameters{})
+			frame.Update(t)
+			res := zebra.Generate(pixelCoordinates, &frame, pkg.GeneratorParameters{})
+			colorRes := dummy.Lookup(res, &frame, pkg.ColorLookupParameters{})
 
 			var bytes = []byte{}
 			for _, color := range colorRes {
@@ -104,7 +125,8 @@ func main() {
 				log.Fatal("xd", err)
 			}
 
-			t += 0.05
+			t += duration.Seconds()
+			xd += 1
 
 		case <-stopTicker:
 			ticker.Stop()
@@ -126,32 +148,11 @@ func getLEDs() *apa102.Dev {
 	// Change the option values to see their effects.
 	opts := apa102.DefaultOpts
 	opts.NumPixels = NUM_LEDS
-	opts.Intensity = 255
+	opts.Intensity = INTENSITY
 	d, err := apa102.New(s, &opts)
 	if err != nil {
 		log.Fatal(err)
 
 	}
 	return d
-}
-
-// colorWheel returns a HSV color wheel.
-func colorWheel(h float64) color.NRGBA {
-	h *= 6
-	switch {
-	case h < 1.:
-		return color.NRGBA{R: 255, G: byte(255 * h), A: 255}
-	case h < 2.:
-		return color.NRGBA{R: byte(255 * (2 - h)), G: 255, A: 255}
-	case h < 3.:
-		return color.NRGBA{G: 255, B: byte(255 * (h - 2)), A: 255}
-	case h < 4.:
-		return color.NRGBA{G: byte(255 * (4 - h)), B: 255, A: 255}
-	case h < 5.:
-		return color.NRGBA{R: byte(255 * (h - 4)), B: 255, A: 255}
-	default:
-		return color.NRGBA{R: 255, B: byte(255 * (6 - h)), A: 255}
-
-	}
-
 }
