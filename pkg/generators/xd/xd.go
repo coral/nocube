@@ -3,6 +3,7 @@ package xd
 import (
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/frame"
+	"github.com/stojg/vector"
 )
 
 type Xd struct {
@@ -14,6 +15,7 @@ func (g *Xd) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.GeneratorPa
 	// quat := vector.QuaternionToTarget(&vector.Vector3{0, 1, 0}, &vector.Vector3{1, 1, 1})
 
 	segment, remainder := f.GetSegment(4)
+	var normal vector.Vector3
 
 	// fmt.Println(quat45)
 	for _, pixel := range pixels {
@@ -28,16 +30,21 @@ func (g *Xd) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.GeneratorPa
 			switch segment {
 			case 0:
 				isActive = pixel.IsLeft()
+				normal = vector.Vector3{0, 0, 1}
 			case 1:
 				isActive = pixel.IsFront()
+				normal = vector.Vector3{-1, 0, 0}
 			case 2:
 				isActive = pixel.IsRight()
+				normal = vector.Vector3{0, 0, -1}
 			case 3:
 				isActive = pixel.IsBack()
+				normal = vector.Vector3{1, 0, 0}
 			}
 
 			if isActive {
-				base = remainder * 4
+				pos := pixel.PositionOnNormal(normal)
+				base = remainder - pos
 			}
 
 			result = append(result, pkg.GeneratorResult{

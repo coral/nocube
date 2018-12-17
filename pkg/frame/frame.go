@@ -40,11 +40,22 @@ func (f *F) GetSine(offset float64) float64 {
 	return math.Sin(f.Phase * math.Pi * 2)
 }
 
+//TODO implement
+func (f *F) GetTriangle(offset float64) float64 {
+	return 1
+}
+
+func (f *F) GetSquare() float64 {
+	if f.Phase >= 0.5 {
+		return 1.0
+	} else {
+		return 0.0
+	}
+}
+
 func (f *F) GetSegment(numSegments uint64) (segmentIndex uint64, remainder float64) {
-	lengthPerSegment := 1.0 / float64(numSegments)
 	segmentIndex = uint64(math.Floor(float64(numSegments) * f.Phase))
-	segmentStart := float64(segmentIndex) * lengthPerSegment
-	remainder = math.Mod(segmentStart+f.Phase, lengthPerSegment)
+	remainder = math.Mod(float64(numSegments) * f.Phase, 1)
 
 	return
 }

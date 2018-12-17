@@ -17,10 +17,14 @@ func (g *Dummy) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, param
 		g := 0.0
 		b := 0.0
 		if pixel.Value < 0 {
-			r = -pixel.Value
-			b = -pixel.Value
+			r = 255
+			g = 255
+			b = 255
 		} else {
-			g = pixel.Value
+			r = 0
+			g = 0
+			b = 0
+			// g = pixel.Value
 		}
 		// clampedValue := clamp01(pixel.Value)
 		results = append(results, pkg.ColorLookupResult{

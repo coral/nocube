@@ -1,8 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"os/signal"
 	"time"
@@ -10,7 +12,7 @@ import (
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/colorlookups/dummy"
 	"github.com/coral/nocube/pkg/frame"
-	"github.com/coral/nocube/pkg/generators/xd"
+	"github.com/coral/nocube/pkg/generators/zebra"
 	"github.com/coral/nocube/pkg/utils"
 	"github.com/stojg/vector"
 	"periph.io/x/periph/conn/spi/spireg"
@@ -18,10 +20,12 @@ import (
 	"periph.io/x/periph/host"
 )
 
-const NUM_LEDS = 604
+const NUM_LEDS = 920
 const INTENSITY = 30
+const PUSHER_DURATION = 5 * time.Millisecond
 
 var pixelCoordinates []pkg.Pixel
+var packagesPushedThisSecond uint
 
 func init() {
 	pixelCoordinates = make([]pkg.Pixel, NUM_LEDS)
@@ -38,11 +42,54 @@ func vectorLerp(a, b vector.Vector3, f float64) vector.Vector3 {
 func insertCoordinates(startIndex, stopIndex int, startVector, stopVector vector.Vector3) {
 	length := stopIndex - startIndex
 
+	dir := stopVector.NewSub(&startVector)
+	dir[0] = math.Abs(dir[0])
+	dir[1] = math.Abs(dir[1])
+	dir[2] = math.Abs(dir[2])
+
+	dir.Normalize()
+
 	for index := 0; index <= length; index++ {
 		val := float64(index) / float64(length)
 
 		pixelCoordinates[index+startIndex].Active = true
 		pixelCoordinates[index+startIndex].Coordinate = vectorLerp(startVector, stopVector, val)
+		pixelCoordinates[index+startIndex].Normal = *dir
+	}
+}
+
+func pusher(d *apa102.Dev, in chan []byte, stop chan bool, debug chan bool) {
+	for {
+		select {
+		case bytes := <-in:
+			_, err := d.Write(bytes)
+			if err != nil {
+				log.Fatal("xd", err)
+			}
+
+			debug <- true
+
+		case <-stop:
+			return
+		}
+	}
+}
+
+func debugger(packagePushed, stop chan bool) {
+	ticker := time.NewTicker(1 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-packagePushed:
+			packagesPushedThisSecond = 0
+		case <-ticker.C:
+			fmt.Println("Packages pushed this second:", packagesPushedThisSecond)
+			packagesPushedThisSecond = 0
+
+		case <-stop:
+			return
+		}
 	}
 }
 
@@ -59,43 +106,54 @@ func main() {
 	insertCoordinates(393, 464, vector.Vector3{0, 1, 0.95}, vector.Vector3{0, 1, 0.05})
 	insertCoordinates(472, 544, vector.Vector3{0.05, 1, 0}, vector.Vector3{0.95, 1, 0})
 
-	d := getLEDs()
+	insertCoordinates(623, 694, vector.Vector3{1, 0.95, 1}, vector.Vector3{1, 0.05, 1})
 
-	const duration = 5 * time.Millisecond
+	insertCoordinates(701, 772, vector.Vector3{0.95, 0, 1}, vector.Vector3{0.05, 0, 1})
 
-	ticker := time.NewTicker(duration)
-	stopTicker := make(chan bool)
+	insertCoordinates(779, 850, vector.Vector3{0, 0, 0.95}, vector.Vector3{0, 0, 0.05})
+
+	d, err := getApa102Device()
+	if err != nil {
+		fmt.Println("Error getting apa102 device:", err)
+		os.Exit(1)
+	}
+	defer d.Halt()
+
+	generatorStop := make(chan bool)
+	pusherStop := make(chan bool)
+	debuggerStop := make(chan bool)
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
 		for _ = range c {
-			stopTicker <- true
+			generatorStop <- true
+			pusherStop <- true
+			debuggerStop <- true
 		}
 	}()
 
-	zebra := xd.Xd{}
+	bytesChannel := make(chan []byte, 1)
+	debuggerChannel := make(chan bool, 10)
+
+	go pusher(d, bytesChannel, pusherStop, debuggerChannel)
+
+	go debugger(debuggerChannel, debuggerStop)
+
+	generator(generatorStop)
+}
+
+func generator(stop chan bool) {
+	ticker := time.NewTicker(PUSHER_DURATION)
+	defer ticker.Stop()
+
+	// zebra := xd.Xd{}
+	zebra := zebra.Zebra{}
 	dummy := dummy.Dummy{}
-
-	t2 := time.NewTicker(1 * time.Second)
-
-	xd := 0
-
-	go func() {
-		for {
-			select {
-			case <-t2.C:
-				fmt.Println("xd: ", xd)
-				xd = 0
-
-			case <-stopTicker:
-				return
-			}
-		}
-	}()
 
 	var t float64
 	frame := frame.New()
 	frame.SetBeat(60.0/30.0, 0)
+
 	for {
 		select {
 		case <-ticker.C:
@@ -112,47 +170,23 @@ func main() {
 				}...)
 			}
 
-			// img := image.NewNRGBA(d.Bounds())
-			// for x := 0; x < img.Rect.Max.X; x++ {
-			// 	img.SetNRGBA(x, 0, colorWheel(float64(x)+offset/float64(img.Rect.Max.X)+offset))
-			// }
-			// if err := d.Draw(d.Bounds(), img, image.Point{}); err != nil {
-			// 	log.Fatal("Error drawing:", err)
-			// }
+			t += PUSHER_DURATION.Seconds()
 
-			_, err := d.Write(bytes)
-			if err != nil {
-				log.Fatal("xd", err)
-			}
-
-			t += duration.Seconds()
-			xd += 1
-
-		case <-stopTicker:
-			ticker.Stop()
-			d.Halt()
+		case <-stop:
 			return
 		}
 	}
 }
 
-// getLEDs returns an *apa102.Dev, or fails back to *screen.Dev if no SPI port
-// is found.
-func getLEDs() *apa102.Dev {
+func getApa102Device() (*apa102.Dev, error) {
 	s, err := spireg.Open("")
 	if err != nil {
-		fmt.Printf("Failed to find a SPI port, printing at the console:\n")
-		return nil
+		return nil, errors.New("Unable to find SPI port")
 	}
 
 	// Change the option values to see their effects.
 	opts := apa102.DefaultOpts
 	opts.NumPixels = NUM_LEDS
 	opts.Intensity = INTENSITY
-	d, err := apa102.New(s, &opts)
-	if err != nil {
-		log.Fatal(err)
-
-	}
-	return d
+	return apa102.New(s, &opts)
 }
