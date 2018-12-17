@@ -16,10 +16,10 @@ func (g *Dummy) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, param
 		r := 0.0
 		g := 0.0
 		b := 0.0
-		if pixel.Value > 0 {
-			r = pixel.Value
-			g = pixel.Value
-			b = pixel.Value
+		if pixel.Intensity > 0 && pixel.Phase > 0 {
+			r = pixel.Phase
+			g = pixel.Intensity
+			b = pixel.Intensity
 		} else {
 			r = 0
 			g = 0

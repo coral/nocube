@@ -7,7 +7,8 @@ type GeneratorParameters struct {
 }
 
 type GeneratorResult struct {
-	Value float64
+	Intensity float64
+	Phase float64
 }
 
 type Generator interface {

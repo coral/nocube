@@ -3,6 +3,7 @@ package edgelord
 import (
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/frame"
+	"github.com/coral/nocube/pkg/utils"
 	"github.com/stojg/vector"
 )
 
@@ -15,37 +16,39 @@ func (g *Edgelord) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.Gener
 	// quat := vector.QuaternionToTarget(&vector.Vector3{0, 1, 0}, &vector.Vector3{1, 1, 1})
 
 
-	x := f.GetSine(0)
-	y := f.GetCos(0)
-
-	circle := vector.NewVector3(x, 0, y)
+	circle := vector.NewVector3(f.GetSine(0), 0, f.GetCos(0))
+	phaseCircle := vector.NewVector3(f.GetSine(0.75), 0, f.GetCos(0.75))
 
 	// fmt.Println(quat45)
 	for _, pixel := range pixels {
 		if !pixel.Active {
 			result = append(result, pkg.GeneratorResult{
-				Value: 0,
+				Intensity: 0,
+				Phase: 0,
 			})
 		} else {
-			isActive := false
-			var base float64
-
-			circlePos := pixel.Coordinate.NewAdd(vector.NewVector3(0.5, 0.5, 0.5))
+			circlePos := pixel.Coordinate.Clone()
+			circlePos[1] = 0
+			circlePos.Sub(vector.NewVector3(0.5, 0, 0.5))
 			circlePos.Normalize();
 
-			if circlePos.NewSub(circle).Length() < 0.5 {
-				isActive = true
+			distance := circlePos.NewSub(circle).Length()
+			phase := circlePos.NewSub(phaseCircle).Length()
+
+			distance = utils.Clamp01(1-distance)
+
+			if (circlePos.Dot(circle) > 0) {
+				distance *= -1
 			}
 
-			if isActive {
-				base = 1
+			if (circlePos.Dot(phaseCircle) > 0) {
+				phase *= -1
 			}
+
 
 			result = append(result, pkg.GeneratorResult{
-				// Value: math.Mod(coord[2], 1.0),
-				// Value: v,
-				// Value: v,
-				Value: base,
+				Intensity: distance,
+				Phase: phase,
 			})
 		}
 	}

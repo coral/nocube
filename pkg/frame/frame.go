@@ -37,11 +37,11 @@ func (f *F) SetBeat(beatduration, beatstart float64) {
 }
 
 func (f *F) GetSine(offset float64) float64 {
-	return math.Sin(f.Phase * math.Pi * 2)
+	return math.Sin((f.Phase + offset) * math.Pi * 2)
 }
 
 func (f *F) GetCos(offset float64) float64 {
-	return math.Cos(f.Phase * math.Pi * 2)
+	return math.Cos((f.Phase + offset) * math.Pi * 2)
 }
 
 //TODO implement

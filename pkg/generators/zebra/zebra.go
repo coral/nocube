@@ -24,7 +24,7 @@ func (g *Zebra) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.Generato
 	for _, pixel := range pixels {
 		if !pixel.Active {
 			result = append(result, pkg.GeneratorResult{
-				Value: 0,
+				Intensity: 0,
 			})
 		} else {
 			coord := pixel.Coordinate.Clone()
@@ -44,7 +44,7 @@ func (g *Zebra) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.Generato
 				// Value: math.Mod(coord[2], 1.0),
 				// Value: v,
 				// Value: v,
-				Value: coord[2],
+				Intensity: coord[2],
 			})
 		}
 	}

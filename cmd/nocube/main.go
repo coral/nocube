@@ -10,8 +10,11 @@ import (
 
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/colorlookups/dummy"
+	"github.com/coral/nocube/pkg/colorlookups/palette"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/generators/edgelord"
+	"github.com/coral/nocube/pkg/generators/xd"
+	"github.com/coral/nocube/pkg/generators/zebra"
 	"github.com/coral/nocube/pkg/mapping"
 	"github.com/coral/nocube/pkg/utils"
 	"periph.io/x/periph/conn/spi/spireg"
@@ -105,21 +108,34 @@ func generator(mapping *mapping.Mapping, bytesChannel chan []byte, stop chan boo
 	ticker := time.NewTicker(PUSHER_DURATION)
 	defer ticker.Stop()
 
-	// zebra := xd.Xd{}
-	zebra := edgelord.Edgelord{}
-	// zebra := zebra.Zebra{}
-	dummy := dummy.Dummy{}
+	generators := map[string]pkg.Generator{
+		"xd":       &xd.Xd{},
+		"edgelord": &edgelord.Edgelord{},
+		"zebra":    &zebra.Zebra{},
+	}
+
+	colorLookups := map[string]pkg.ColorLookup{
+		"dummy":   &dummy.Dummy{},
+		"palette": &palette.Palette{},
+	}
 
 	var t float64
 	frame := frame.New()
 	frame.SetBeat(60.0/30.0, 0)
 
+	generator := generators["edgelord"]
+	colorLookup := colorLookups["palette"]
+
+	if generator == nil || colorLookup == nil {
+		panic("No valid generator or color lookup chosen")
+	}
+
 	for {
 		select {
 		case <-ticker.C:
 			frame.Update(t)
-			res := zebra.Generate(mapping.Coordinates, &frame, pkg.GeneratorParameters{})
-			colorRes := dummy.Lookup(res, &frame, pkg.ColorLookupParameters{})
+			res := generator.Generate(mapping.Coordinates, &frame, pkg.GeneratorParameters{})
+			colorRes := colorLookup.Lookup(res, &frame, pkg.ColorLookupParameters{})
 
 			var bytes = []byte{}
 			for _, color := range colorRes {

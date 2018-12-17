@@ -21,7 +21,7 @@ func (g *Xd) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.GeneratorPa
 	for _, pixel := range pixels {
 		if !pixel.Active {
 			result = append(result, pkg.GeneratorResult{
-				Value: 0,
+				Intensity: 0,
 			})
 		} else {
 			isActive := false
@@ -51,7 +51,7 @@ func (g *Xd) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.GeneratorPa
 				// Value: math.Mod(coord[2], 1.0),
 				// Value: v,
 				// Value: v,
-				Value: base,
+				Intensity: base,
 			})
 		}
 	}

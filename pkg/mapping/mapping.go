@@ -28,13 +28,13 @@ func (m *Mapping) WriteFile() error {
 	if err != nil {
 		return err
 	}
-	ioutil.WriteFile("../../files/"+m.path+".json", data, 0644)
+	ioutil.WriteFile("../../files/mappings/"+m.path+".json", data, 0644)
 
 	return nil
 }
 
 func (m *Mapping) LoadFile() error {
-	b, err := ioutil.ReadFile("../../files/" + m.path + ".json")
+	b, err := ioutil.ReadFile("../../files/mappings/" + m.path + ".json")
 	if err != nil {
 		return err
 	}
