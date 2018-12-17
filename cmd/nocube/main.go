@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"math"
 	"os"
 	"os/signal"
 	"time"
@@ -12,9 +11,9 @@ import (
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/colorlookups/dummy"
 	"github.com/coral/nocube/pkg/frame"
-	"github.com/coral/nocube/pkg/generators/zebra"
+	"github.com/coral/nocube/pkg/generators/edgelord"
+	"github.com/coral/nocube/pkg/mapping"
 	"github.com/coral/nocube/pkg/utils"
-	"github.com/stojg/vector"
 	"periph.io/x/periph/conn/spi/spireg"
 	"periph.io/x/periph/devices/apa102"
 	"periph.io/x/periph/host"
@@ -24,39 +23,7 @@ const NUM_LEDS = 920
 const INTENSITY = 30
 const PUSHER_DURATION = 5 * time.Millisecond
 
-var pixelCoordinates []pkg.Pixel
 var packagesPushedThisSecond uint
-
-func init() {
-	pixelCoordinates = make([]pkg.Pixel, NUM_LEDS)
-}
-
-func vectorLerp(a, b vector.Vector3, f float64) vector.Vector3 {
-	l := b.NewSub(&a)
-
-	asd2 := l.Scale(f)
-
-	return *a.NewAdd(asd2)
-}
-
-func insertCoordinates(startIndex, stopIndex int, startVector, stopVector vector.Vector3) {
-	length := stopIndex - startIndex
-
-	dir := stopVector.NewSub(&startVector)
-	dir[0] = math.Abs(dir[0])
-	dir[1] = math.Abs(dir[1])
-	dir[2] = math.Abs(dir[2])
-
-	dir.Normalize()
-
-	for index := 0; index <= length; index++ {
-		val := float64(index) / float64(length)
-
-		pixelCoordinates[index+startIndex].Active = true
-		pixelCoordinates[index+startIndex].Coordinate = vectorLerp(startVector, stopVector, val)
-		pixelCoordinates[index+startIndex].Normal = *dir
-	}
-}
 
 func pusher(d *apa102.Dev, in chan []byte, stop chan bool, debug chan bool) {
 	for {
@@ -82,7 +49,7 @@ func debugger(packagePushed, stop chan bool) {
 	for {
 		select {
 		case <-packagePushed:
-			packagesPushedThisSecond = 0
+			packagesPushedThisSecond++
 		case <-ticker.C:
 			fmt.Println("Packages pushed this second:", packagesPushedThisSecond)
 			packagesPushedThisSecond = 0
@@ -98,19 +65,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	insertCoordinates(9, 80, vector.Vector3{0, 0.95, 0}, vector.Vector3{0, 0.05, 0})
-	insertCoordinates(87, 158, vector.Vector3{0.05, 0, 0}, vector.Vector3{0.95, 0, 0})
-	insertCoordinates(165, 237, vector.Vector3{1, 0.05, 0}, vector.Vector3{1, 0.95, 0})
-	insertCoordinates(246, 305, vector.Vector3{1, 1, 0.05}, vector.Vector3{1, 1, 0.95})
-	insertCoordinates(313, 385, vector.Vector3{0.95, 1, 1}, vector.Vector3{0.05, 1, 1})
-	insertCoordinates(393, 464, vector.Vector3{0, 1, 0.95}, vector.Vector3{0, 1, 0.05})
-	insertCoordinates(472, 544, vector.Vector3{0.05, 1, 0}, vector.Vector3{0.95, 1, 0})
-
-	insertCoordinates(623, 694, vector.Vector3{1, 0.95, 1}, vector.Vector3{1, 0.05, 1})
-
-	insertCoordinates(701, 772, vector.Vector3{0.95, 0, 1}, vector.Vector3{0.05, 0, 1})
-
-	insertCoordinates(779, 850, vector.Vector3{0, 0, 0.95}, vector.Vector3{0, 0, 0.05})
+	mapping := mapping.New("v1", NUM_LEDS)
+	err := mapping.LoadFile()
+	if err != nil {
+		panic(err)
+	}
 
 	d, err := getApa102Device()
 	if err != nil {
@@ -139,15 +98,16 @@ func main() {
 
 	go debugger(debuggerChannel, debuggerStop)
 
-	generator(generatorStop)
+	generator(mapping, bytesChannel, generatorStop)
 }
 
-func generator(stop chan bool) {
+func generator(mapping *mapping.Mapping, bytesChannel chan []byte, stop chan bool) {
 	ticker := time.NewTicker(PUSHER_DURATION)
 	defer ticker.Stop()
 
 	// zebra := xd.Xd{}
-	zebra := zebra.Zebra{}
+	zebra := edgelord.Edgelord{}
+	// zebra := zebra.Zebra{}
 	dummy := dummy.Dummy{}
 
 	var t float64
@@ -158,7 +118,7 @@ func generator(stop chan bool) {
 		select {
 		case <-ticker.C:
 			frame.Update(t)
-			res := zebra.Generate(pixelCoordinates, &frame, pkg.GeneratorParameters{})
+			res := zebra.Generate(mapping.Coordinates, &frame, pkg.GeneratorParameters{})
 			colorRes := dummy.Lookup(res, &frame, pkg.ColorLookupParameters{})
 
 			var bytes = []byte{}
@@ -169,6 +129,8 @@ func generator(stop chan bool) {
 					utils.Clamp255(color.Color[2] * 255),
 				}...)
 			}
+
+			bytesChannel <- bytes
 
 			t += PUSHER_DURATION.Seconds()
 

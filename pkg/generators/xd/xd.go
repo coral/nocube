@@ -32,14 +32,14 @@ func (g *Xd) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.GeneratorPa
 				isActive = pixel.IsLeft()
 				normal = vector.Vector3{0, 0, 1}
 			case 1:
-				isActive = pixel.IsFront()
-				normal = vector.Vector3{-1, 0, 0}
+				isActive = pixel.IsBack()
+				normal = vector.Vector3{1, 0, 0}
 			case 2:
 				isActive = pixel.IsRight()
 				normal = vector.Vector3{0, 0, -1}
 			case 3:
-				isActive = pixel.IsBack()
-				normal = vector.Vector3{1, 0, 0}
+				isActive = pixel.IsFront()
+				normal = vector.Vector3{-1, 0, 0}
 			}
 
 			if isActive {

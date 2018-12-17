@@ -1,7 +1,7 @@
 package pkg
 
 import (
-	"math"
+	//"math"
 
 	"github.com/stojg/vector"
 )
@@ -30,11 +30,11 @@ func (p *Pixel) IsRight() bool {
 }
 
 func (p *Pixel) IsFront() bool {
-	return p.Coordinate[2] == 1.0
+	return p.Coordinate[2] == 0.0
 }
 
 func (p *Pixel) IsBack() bool {
-	return p.Coordinate[2] == 0.0
+	return p.Coordinate[2] == 1.0
 }
 
 func (p *Pixel) PositionInTube() float64 {
@@ -47,15 +47,14 @@ func (p *Pixel) PositionInTube() float64 {
 
 func (p *Pixel) PositionOnNormal(n vector.Vector3) float64 {
 	axis := p.Coordinate.Clone()
-	axis[0] *= math.Abs(n[0])
-	axis[1] *= math.Abs(n[1])
-	axis[2] *= math.Abs(n[2])
+	axis[0] *= n[0]
+	axis[1] *= n[1]
+	axis[2] *= n[2]
 	res := axis.Length()
 
-	// TODO: fix KKona
-	// if axis.Dot(&normal) < 0 {
-	// 	res *= -1
-	// }
+	if vector.NewVector3(1, 1, 1).Dot(&n) < 0 {
+		res = 1 - res
+	}
 
 	return res
 }
