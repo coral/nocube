@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -17,9 +16,7 @@ import (
 	"github.com/coral/nocube/pkg/generators/zebra"
 	"github.com/coral/nocube/pkg/mapping"
 	"github.com/coral/nocube/pkg/utils"
-	"periph.io/x/periph/conn/spi/spireg"
 	"periph.io/x/periph/devices/apa102"
-	"periph.io/x/periph/host"
 )
 
 const NUM_LEDS = 920
@@ -64,22 +61,11 @@ func debugger(packagePushed, stop chan bool) {
 }
 
 func main() {
-	if _, err := host.Init(); err != nil {
-		log.Fatal(err)
-	}
 
-	mapping := mapping.New("v1", NUM_LEDS)
-	err := mapping.LoadFile()
+	mapping, err := mapping.LoadNewFromFile("v1")
 	if err != nil {
 		panic(err)
 	}
-
-	d, err := getApa102Device()
-	if err != nil {
-		fmt.Println("Error getting apa102 device:", err)
-		os.Exit(1)
-	}
-	defer d.Halt()
 
 	generatorStop := make(chan bool)
 	pusherStop := make(chan bool)
@@ -154,17 +140,4 @@ func generator(mapping *mapping.Mapping, bytesChannel chan []byte, stop chan boo
 			return
 		}
 	}
-}
-
-func getApa102Device() (*apa102.Dev, error) {
-	s, err := spireg.Open("")
-	if err != nil {
-		return nil, errors.New("Unable to find SPI port")
-	}
-
-	// Change the option values to see their effects.
-	opts := apa102.DefaultOpts
-	opts.NumPixels = NUM_LEDS
-	opts.Intensity = INTENSITY
-	return apa102.New(s, &opts)
 }
