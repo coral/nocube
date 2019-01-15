@@ -22,7 +22,19 @@ func New(path string, numPixels uint) *Mapping {
 		Coordinates: make([]pkg.Pixel, numPixels),
 	}
 }
+func LoadNewFromFile(mappingName string) (*Mapping, error) {
 
+	newM := Mapping{
+		path: mappingName,
+	}
+	err := newM.LoadFile()
+	if err != nil {
+		return nil, err
+	}
+
+	return &newM, nil
+
+}
 func (m *Mapping) WriteFile() error {
 	data, err := m.MarshalJSON()
 	if err != nil {

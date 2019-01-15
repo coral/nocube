@@ -2,21 +2,23 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"os/signal"
 	"time"
 
 	"github.com/coral/nocube/pkg"
+	"github.com/coral/nocube/pkg/audio"
 	"github.com/coral/nocube/pkg/colorlookups/dummy"
 	"github.com/coral/nocube/pkg/colorlookups/palette"
+	"github.com/coral/nocube/pkg/control/web"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/generators/edgelord"
 	"github.com/coral/nocube/pkg/generators/xd"
 	"github.com/coral/nocube/pkg/generators/zebra"
 	"github.com/coral/nocube/pkg/mapping"
+	"github.com/coral/nocube/pkg/settings"
 	"github.com/coral/nocube/pkg/utils"
 	"periph.io/x/periph/devices/apa102"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const NUM_LEDS = 920
@@ -62,32 +64,58 @@ func debugger(packagePushed, stop chan bool) {
 
 func main() {
 
-	mapping, err := mapping.LoadNewFromFile("v1")
+	//Initialize logger
+	log.SetLevel(log.DebugLevel)
+	log.Info("Starting nocube")
+
+	//Load settings
+	settings, err := settings.New("start")
 	if err != nil {
 		panic(err)
 	}
 
-	generatorStop := make(chan bool)
-	pusherStop := make(chan bool)
-	debuggerStop := make(chan bool)
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	go func() {
-		for _ = range c {
-			generatorStop <- true
-			pusherStop <- true
-			debuggerStop <- true
+	log.WithFields(log.Fields{
+		"Settings": settings.Path + ".json",
+		"Mapping":  settings.Global.Mapping.Path + ".json",
+		"Web":      settings.Global.Control.Web.Listen,
+	}).Info("Loaded settings")
+
+	log.Debug(settings)
+
+	a := audio.New(settings)
+	a.Init()
+	a.Process()
+	/*
+		mapping, err := mapping.LoadNewFromFile(settings.Mapping.Path)
+		if err != nil {
+			panic(err)
 		}
-	}()
+	*/
+	server := web.Server{}
+	server.Init(settings)
 
-	bytesChannel := make(chan []byte, 1)
-	debuggerChannel := make(chan bool, 10)
+	/*
+		generatorStop := make(chan bool)
+		pusherStop := make(chan bool)
+		debuggerStop := make(chan bool)
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, os.Interrupt)
+		go func() {
+			for _ = range c {
+				generatorStop <- true
+				pusherStop <- true
+				debuggerStop <- true
+			}
+		}()
 
-	go pusher(d, bytesChannel, pusherStop, debuggerChannel)
+		bytesChannel := make(chan []byte, 1)
+		debuggerChannel := make(chan bool, 10)
 
-	go debugger(debuggerChannel, debuggerStop)
+		go pusher(d, bytesChannel, pusherStop, debuggerChannel)
 
-	generator(mapping, bytesChannel, generatorStop)
+		go debugger(debuggerChannel, debuggerStop)
+
+		generator(mapping, bytesChannel, generatorStop) */
 }
 
 func generator(mapping *mapping.Mapping, bytesChannel chan []byte, stop chan bool) {
