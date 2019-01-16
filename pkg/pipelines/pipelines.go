@@ -14,7 +14,7 @@ type Pipelines struct {
 
 func New(f *frame.F, m *mapping.Mapping) *Pipelines {
 	return &Pipelines{
-		Active:  make(map[string]*pipeline.Pipeline),
+		Active:  make(map[string]*pipeline.Pipeline, 100),
 		frame:   f,
 		mapping: m,
 	}
