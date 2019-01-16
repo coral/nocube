@@ -14,6 +14,8 @@ import (
 	"github.com/coral/nocube/pkg/generators/xd"
 	"github.com/coral/nocube/pkg/generators/zebra"
 	"github.com/coral/nocube/pkg/mapping"
+	"github.com/coral/nocube/pkg/pipelines"
+	"github.com/coral/nocube/pkg/pipelines/pipeline"
 	"github.com/coral/nocube/pkg/settings"
 	"github.com/coral/nocube/pkg/utils"
 	"periph.io/x/periph/devices/apa102"
@@ -84,13 +86,22 @@ func main() {
 
 	a := audio.New(settings)
 	a.Init()
-	a.Process()
-	/*
-		mapping, err := mapping.LoadNewFromFile(settings.Mapping.Path)
-		if err != nil {
-			panic(err)
-		}
-	*/
+	defer a.Close()
+	go a.Process()
+
+	mapping, err := mapping.LoadNewFromFile(settings.Global.Mapping.Path)
+	if err != nil {
+		panic(err)
+	}
+
+	frame := frame.New()
+	frame.SetBeat(60.0/30.0, 0)
+
+	Pipelines := pipelines.New(&frame, mapping)
+	test := pipeline.New("zebra", "allwhite")
+	Pipelines.Add(test)
+	Pipelines.Process()
+
 	server := web.Server{}
 	server.Init(settings)
 
