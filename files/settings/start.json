@@ -1,23 +1,23 @@
 {
-  "Path": "start",
-  "Global": {
-    "Mapping": {
-      "Path": "v1"
-    },
-    "Control": {
-      "Web": {
-        "Listen": "0.0.0.0:8080"
-      }
-    },
-    "Audio": {
-      "SampleRate": 48000.0,
-      "Channels": 1,
-      "BufSize": 512,
-      "BlockSize": 256,
-      "Beat": {
-        "Silence": -70,
-        "Threshold": 0.3
-      }
-    }
-  }
+	"Path": "start",
+	"Global": {
+		"Mapping": {
+			"Path": "v1"
+		},
+		"Control": {
+			"Web": {
+				"Listen": "0.0.0.0:8080"
+			}
+		},
+		"Audio": {
+			"SampleRate": 48000,
+			"Channels": 1,
+			"BufSize": 512,
+			"BlockSize": 256,
+			"Beat": {
+				"Silence": -70,
+				"Threshold": 0.3
+			}
+		}
+	}
 }

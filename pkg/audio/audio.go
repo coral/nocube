@@ -1,8 +1,6 @@
 package audio
 
 import (
-	"fmt"
-
 	aubio "github.com/coral/aubio-go"
 	"github.com/coral/nocube/pkg/settings"
 	"github.com/gordonklaus/portaudio"
@@ -33,7 +31,6 @@ func New(s *settings.Settings) *Audio {
 func (a *Audio) Init() error {
 	log.Debug("Init PortAudio")
 	portaudio.Initialize()
-	defer portaudio.Terminate()
 	log.Debug("PortAudio init success")
 
 	a.Input.Buffer = make([]float32, a.s.Global.Audio.BufSize)
@@ -46,23 +43,24 @@ func (a *Audio) Init() error {
 	if err != nil {
 		log.Fatalln("Could not open audio stream")
 	}
-	fmt.Println(t)
 	a.Input.Stream = t
-	defer a.Input.Stream.Close()
 
 	return nil
+}
+
+func (a *Audio) Close() {
+	portaudio.Terminate()
+	a.Input.Stream.Close()
 }
 
 //Process starts the audio processing, this function is locking
 func (a *Audio) Process() {
 
-	fmt.Println(a.Input.Stream)
-
 	err := a.Input.Stream.Start()
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	log.Debug("Started audio processing")
 	for {
 		err := a.Input.Stream.Read()
 		if err != nil {
@@ -76,6 +74,7 @@ func (a *Audio) Process() {
 		//go lel(in)
 	}
 }
+
 func convertTo64(ar []float32) []float64 {
 	newar := make([]float64, len(ar))
 	var v float32
