@@ -1,9 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/coral/nocube/pkg/audio"
 	"github.com/coral/nocube/pkg/control/web"
 	"github.com/coral/nocube/pkg/frame"
@@ -12,51 +9,50 @@ import (
 	"github.com/coral/nocube/pkg/pipelines/pipeline"
 	"github.com/coral/nocube/pkg/render"
 	"github.com/coral/nocube/pkg/settings"
-	"periph.io/x/periph/devices/apa102"
 
 	log "github.com/sirupsen/logrus"
 )
 
-const NUM_LEDS = 920
-const INTENSITY = 30
-const PUSHER_DURATION = 5 * time.Millisecond
+// const NUM_LEDS = 920
+// const INTENSITY = 30
+// const PUSHER_DURATION = 5 * time.Millisecond
 
-var packagesPushedThisSecond uint
+// var packagesPushedThisSecond uint
 
-func pusher(d *apa102.Dev, in chan []byte, stop chan bool, debug chan bool) {
-	for {
-		select {
-		case bytes := <-in:
-			_, err := d.Write(bytes)
-			if err != nil {
-				log.Fatal("xd", err)
-			}
+// func pusher(d *apa102.Dev, in chan []byte, stop chan bool, debug chan bool) {
+// 	for {
+// 		select {
+// 		case bytes := <-in:
+// 			_, err := d.Write(bytes)
+// 			if err != nil {
+// 				log.Fatal("xd", err)
+// 			}
 
-			debug <- true
+// 			debug <- true
 
-		case <-stop:
-			return
-		}
-	}
-}
+// 		case <-stop:
+// 			return
+// 		}
+// 	}
+// }
 
-func debugger(packagePushed, stop chan bool) {
-	ticker := time.NewTicker(1 * time.Second)
-	defer ticker.Stop()
+// func debugger(packagePushed, stop chan bool) {
+// 	ticker := time.NewTicker(1 * time.Second)
+// 	defer ticker.Stop()
 
-	for {
-		select {
-		case <-packagePushed:
-			packagesPushedThisSecond++
-		case <-ticker.C:
-			fmt.Println("Packages pushed this second:", packagesPushedThisSecond)
-			packagesPushedThisSecond = 0
+// 	for {
+// 		select {
+// 		case <-packagePushed:
+// 			packagesPushedThisSecond++
+// 		case <-ticker.C:
+// 			fmt.Println("Packages pushed this second:", packagesPushedThisSecond)
+// 			packagesPushedThisSecond = 0
 
-		case <-stop:
-			return
-		}
-	}
-}
+// 		case <-stop:
+// 			return
+// 		}
+// 	}
+// }
 
 func main() {
 
@@ -97,10 +93,15 @@ func main() {
 	Pipelines := pipelines.New(&frame, mapping)
 	test := pipeline.New("zebra", "allwhite")
 	Pipelines.Add(test)
-	Pipelines.Process()
+
+	go func() {
+		for v := range frame.OnUpdate {
+			Pipelines.Process(v)
+		}
+	}()
 
 	server := web.Server{}
-	server.Init(settings)
+	server.Init(settings, mapping)
 
 	/*
 		generatorStop := make(chan bool)

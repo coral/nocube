@@ -20,9 +20,10 @@ func New(f *frame.F, m *mapping.Mapping) *Pipelines {
 	}
 }
 
-func (p *Pipelines) Process() {
+func (p *Pipelines) Process(f *frame.F) {
 	//var outputBuffer []pkg.ColorLookupResult
 
+	p.frame = f
 	for _, pipeline := range p.Active {
 		data := pipeline.Process(p.frame, p.mapping)
 
@@ -30,7 +31,9 @@ func (p *Pipelines) Process() {
 		for i, d := range data {
 			data[i].Color = *d.Color.Scale(0.5)
 		}
+
 	}
+
 }
 
 func (p *Pipelines) Add(newPipeline *pipeline.Pipeline) {

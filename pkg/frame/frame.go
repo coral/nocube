@@ -18,6 +18,8 @@ type F struct {
 
 	renderHolder *render.Render
 	renderSignal chan render.Update
+
+	OnUpdate chan *F
 }
 
 func New(newR *render.Render) F {
@@ -28,6 +30,7 @@ func New(newR *render.Render) F {
 		BeatStart:    0.0,
 		renderHolder: newR,
 		renderSignal: make(chan render.Update),
+		OnUpdate:     make(chan *F),
 	}
 
 	newF.renderHolder.Update.Register(newF.renderSignal)
@@ -44,6 +47,8 @@ func (f *F) Update(u render.Update) {
 	f.Timepoint = float64(u.TimeSinceStart * time.Millisecond)
 	f.Phase = math.Mod((f.Timepoint-f.BeatStart)/f.BeatDuration, 1)
 	f.Index = u.FrameNumber
+
+	f.OnUpdate <- f
 }
 
 func (f *F) SetBeat(beatduration, beatstart float64) {
