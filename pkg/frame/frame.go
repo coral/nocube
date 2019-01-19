@@ -1,8 +1,10 @@
 package frame
 
 import (
-	"fmt"
 	"math"
+	"time"
+
+	"github.com/coral/nocube/pkg/render"
 )
 
 type F struct {
@@ -13,22 +15,35 @@ type F struct {
 	BeatStart    float64
 
 	Phase float64
+
+	renderHolder *render.Render
+	renderSignal chan render.Update
 }
 
-func New() F {
+func New(newR *render.Render) F {
+
 	newF := F{
 		Index:        0,
 		BeatDuration: 60.0 / 120.0,
 		BeatStart:    0.0,
+		renderHolder: newR,
+		renderSignal: make(chan render.Update),
 	}
 
-	fmt.Println(newF)
+	newF.renderHolder.Update.Register(newF.renderSignal)
+
+	go func() {
+		for v := range newF.renderSignal {
+			newF.Update(v)
+		}
+	}()
+
 	return newF
 }
-func (f *F) Update(timepoint float64) {
-	f.Timepoint = timepoint
+func (f *F) Update(u render.Update) {
+	f.Timepoint = float64(u.TimeSinceStart * time.Millisecond)
 	f.Phase = math.Mod((f.Timepoint-f.BeatStart)/f.BeatDuration, 1)
-	f.Index++
+	f.Index = u.FrameNumber
 }
 
 func (f *F) SetBeat(beatduration, beatstart float64) {

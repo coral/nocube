@@ -7,9 +7,9 @@ import (
 )
 
 type Pixel struct {
-	Active     bool
-	Coordinate vector.Vector3
-	Normal     vector.Vector3
+	Active     bool           `json:"A"`
+	Coordinate vector.Vector3 `json:"C"`
+	Normal     vector.Vector3 `json:"N"`
 }
 
 // Sides

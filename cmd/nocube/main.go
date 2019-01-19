@@ -4,20 +4,14 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/audio"
-	"github.com/coral/nocube/pkg/colorlookups/dummy"
-	"github.com/coral/nocube/pkg/colorlookups/palette"
 	"github.com/coral/nocube/pkg/control/web"
 	"github.com/coral/nocube/pkg/frame"
-	"github.com/coral/nocube/pkg/generators/edgelord"
-	"github.com/coral/nocube/pkg/generators/xd"
-	"github.com/coral/nocube/pkg/generators/zebra"
 	"github.com/coral/nocube/pkg/mapping"
 	"github.com/coral/nocube/pkg/pipelines"
 	"github.com/coral/nocube/pkg/pipelines/pipeline"
+	"github.com/coral/nocube/pkg/render"
 	"github.com/coral/nocube/pkg/settings"
-	"github.com/coral/nocube/pkg/utils"
 	"periph.io/x/periph/devices/apa102"
 
 	log "github.com/sirupsen/logrus"
@@ -94,7 +88,10 @@ func main() {
 		panic(err)
 	}
 
-	frame := frame.New()
+	render := render.New(settings)
+	render.Start()
+
+	frame := frame.New(render)
 	frame.SetBeat(60.0/30.0, 0)
 
 	Pipelines := pipelines.New(&frame, mapping)
@@ -129,7 +126,7 @@ func main() {
 		generator(mapping, bytesChannel, generatorStop) */
 }
 
-func generator(mapping *mapping.Mapping, bytesChannel chan []byte, stop chan bool) {
+/* func generator(mapping *mapping.Mapping, bytesChannel chan []byte, stop chan bool) {
 	ticker := time.NewTicker(PUSHER_DURATION)
 	defer ticker.Stop()
 
@@ -179,4 +176,4 @@ func generator(mapping *mapping.Mapping, bytesChannel chan []byte, stop chan boo
 			return
 		}
 	}
-}
+} */

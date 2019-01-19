@@ -22,6 +22,9 @@ type Settings struct {
 				Listen string
 			}
 		}
+		Render struct {
+			InternalTargetFPS int
+		}
 		Audio struct {
 			SampleRate float64
 			Channels   int
