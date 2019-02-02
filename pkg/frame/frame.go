@@ -43,7 +43,7 @@ func New(newR *render.Render) F {
 
 	return newF
 }
-func (f *F) Update(u render.Update) {
+func (f *F) Update(u render.Update) {3
 	f.Timepoint = float64(u.TimeSinceStart * time.Millisecond)
 	f.Phase = math.Mod((f.Timepoint-f.BeatStart)/f.BeatDuration, 1)
 	f.Index = u.FrameNumber

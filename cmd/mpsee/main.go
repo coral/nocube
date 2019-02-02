@@ -54,9 +54,9 @@ func main() {
 		}...)
 	}
 
-	fmt.Println(bytes)
-
-	fmt.Println(a.Write(bytes))
+	for {
+		a.Write(bytes)
+	}
 
 }
 
