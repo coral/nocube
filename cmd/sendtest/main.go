@@ -1,23 +1,19 @@
-// Copyright 2015 The Gorilla WebSocket Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
-// +build ignore
-
 package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/url"
 	"os"
 	"os/signal"
 	"time"
 
+	"github.com/coral/nocube/pkg/utils"
 	"github.com/gorilla/websocket"
 )
 
-var addr = flag.String("addr", "localhost:8080", "http service address")
+var addr = flag.String("addr", "10.0.1.67:8080", "http service address")
 
 func main() {
 	flag.Parse()
@@ -49,15 +45,32 @@ func main() {
 		}
 	}()
 
-	ticker := time.NewTicker(time.Second)
+	ticker := time.NewTicker(time.Millisecond * 5)
 	defer ticker.Stop()
 
+	var p float64 = 0.0
 	for {
 		select {
 		case <-done:
 			return
 		case t := <-ticker.C:
-			err := c.WriteMessage(websocket.TextMessage, []byte(t.String()))
+			_ = t
+			var bytes = []byte{}
+			for i := 0; i < 32; i++ {
+				bytes = append(bytes, []byte{
+					utils.Clamp255(p),
+					utils.Clamp255(0),
+					utils.Clamp255(0),
+				}...)
+			}
+			if p <= 60 {
+				p = p + 1.0
+			} else {
+				p = 0.0
+			}
+			fmt.Println(p)
+
+			err := c.WriteMessage(websocket.BinaryMessage, bytes)
 			if err != nil {
 				log.Println("write:", err)
 				return

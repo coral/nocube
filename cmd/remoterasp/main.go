@@ -1,9 +1,3 @@
-// Copyright 2015 The Gorilla WebSocket Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
-// +build ignore
-
 package main
 
 import (
@@ -24,7 +18,7 @@ var upgrader = websocket.Upgrader{} // use default options
 
 var ba = apa102.Dev{}
 
-func echo(w http.ResponseWriter, r *http.Request) {
+func data(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
@@ -54,7 +48,7 @@ func main() {
 
 	opts := apa102.DefaultOpts
 	opts.NumPixels = 32
-	opts.Intensity = 30
+	opts.Intensity = 255
 	a, err := apa102.New(s, &opts)
 	defer a.Halt()
 
@@ -66,6 +60,6 @@ func main() {
 
 	flag.Parse()
 	log.SetFlags(0)
-	http.HandleFunc("/echo", echo)
+	http.HandleFunc("/data", data)
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
