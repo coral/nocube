@@ -13,3 +13,5 @@ main
 *.out
 
 ._*
+
+.DS_Store
