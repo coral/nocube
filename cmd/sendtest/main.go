@@ -22,7 +22,7 @@ func main() {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 
-	u := url.URL{Scheme: "ws", Host: *addr, Path: "/echo"}
+	u := url.URL{Scheme: "ws", Host: *addr, Path: "/data"}
 	log.Printf("connecting to %s", u.String())
 
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
@@ -45,7 +45,7 @@ func main() {
 		}
 	}()
 
-	ticker := time.NewTicker(time.Millisecond * 5)
+	ticker := time.NewTicker(time.Millisecond * 10)
 	defer ticker.Stop()
 
 	var p float64 = 0.0
@@ -63,7 +63,7 @@ func main() {
 					utils.Clamp255(0),
 				}...)
 			}
-			if p <= 60 {
+			if p <= 255 {
 				p = p + 1.0
 			} else {
 				p = 0.0

@@ -4,15 +4,18 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"strconv"
 
 	"periph.io/x/periph/devices/apa102"
 
 	"github.com/gorilla/websocket"
+	"github.com/grandcat/zeroconf"
 	"periph.io/x/periph/conn/spi/spireg"
 	"periph.io/x/periph/host"
 )
 
-var addr = flag.String("addr", "0.0.0.0:8080", "http service address")
+var port = flag.Int("port", 12500, "listen port")
+var bridgename = flag.String("bridgename", "korv", "name of bridge for discovery")
 
 var upgrader = websocket.Upgrader{} // use default options
 
@@ -36,6 +39,16 @@ func data(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	flag.Parse()
+	log.SetFlags(0)
+
+	server, err := zeroconf.Register(*bridgename, "_apabridge._tcp", "local.", *port, []string{"txtv=0", "lo=1", "la=2"}, nil)
+	if err != nil {
+		panic(err)
+	}
+	defer server.Shutdown()
+
 	if _, err := host.Init(); err != nil {
 		log.Fatal(err)
 	}
@@ -58,8 +71,6 @@ func main() {
 
 	ba = *a
 
-	flag.Parse()
-	log.SetFlags(0)
 	http.HandleFunc("/data", data)
-	log.Fatal(http.ListenAndServe(*addr, nil))
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(*port), nil))
 }

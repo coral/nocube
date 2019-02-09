@@ -21,6 +21,14 @@
         "Silence": -70,
         "Threshold": 0.3
       }
+    },
+    "Output": {
+      "RAPA102": [
+        {
+          "Identifier": "penis",
+          "TargetFPS": 200
+        }
+      ]
     }
   }
 }
