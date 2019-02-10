@@ -35,6 +35,13 @@ type Settings struct {
 				Threshold float32
 			}
 		}
+		Output struct {
+			ActivatedOutputs []string
+			RAPA102          []struct {
+				Identifier string
+				TargetFPS  int
+			}
+		}
 	}
 }
 
