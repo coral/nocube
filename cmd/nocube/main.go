@@ -5,6 +5,7 @@ import (
 	"github.com/coral/nocube/pkg/control/web"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/mapping"
+	"github.com/coral/nocube/pkg/output"
 	"github.com/coral/nocube/pkg/pipelines"
 	"github.com/coral/nocube/pkg/pipelines/pipeline"
 	"github.com/coral/nocube/pkg/render"
@@ -83,6 +84,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	output := output.New(settings)
+	output.Init()
 
 	render := render.New(settings)
 	render.Start()
