@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/coral/nocube/pkg/audio"
 	"github.com/coral/nocube/pkg/control/web"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/mapping"
@@ -75,10 +74,10 @@ func main() {
 
 	log.Debug(settings)
 
-	a := audio.New(settings)
-	a.Init()
-	defer a.Close()
-	go a.Process()
+	// a := audio.New(settings)
+	// a.Init()
+	// defer a.Close()
+	// go a.Process()
 
 	mapping, err := mapping.LoadNewFromFile(settings.Global.Mapping.Path)
 	if err != nil {
