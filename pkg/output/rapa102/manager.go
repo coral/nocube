@@ -34,9 +34,10 @@ func (rm *RMan) Init() {
 			}).Info("Found RAPA102 controller")
 
 			d := RAPA102{
-				Name: entry.ServiceRecord.Instance,
-				IP:   entry.AddrIPv4[0],
-				Port: entry.Port,
+				Name:        entry.ServiceRecord.Instance,
+				IP:          entry.AddrIPv4[0],
+				Port:        entry.Port,
+				PixelStream: make(chan []pkg.ColorLookupResult),
 			}
 
 			rm.registeredDevices = append(rm.registeredDevices, d)
@@ -66,7 +67,7 @@ func (rm *RMan) ModuleName() string {
 	return "RAPA102"
 }
 
-func (rm *RMan) Send(d []pkg.ColorLookupResult) {
+func (rm *RMan) Write(d []pkg.ColorLookupResult) {
 	for _, conectedRAPA102 := range rm.connectedDevices {
 		conectedRAPA102.PixelStream <- d
 	}

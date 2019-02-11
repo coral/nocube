@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/coral/nocube/pkg/settings"
+	log "github.com/sirupsen/logrus"
 )
 
 type Update struct {
@@ -33,12 +34,13 @@ func New(s *settings.Settings) *Render {
 
 func (r *Render) Start() {
 	r.ticker = time.NewTicker(r.targetTickerTime)
+	log.Debug("Starting rendering loop")
 	go r.onUpdate()
 
 }
 
 func (r *Render) onUpdate() {
-
+	log.Debug("Updating render loop")
 	u := Update{
 		FrameNumber:     0,
 		TimeSinceStart:  time.Since(r.startTimer),
@@ -50,6 +52,7 @@ func (r *Render) onUpdate() {
 			u.TimeSinceStart = time.Since(r.startTimer)
 			u.TimeSinceUpdate = time.Since(r.timeSinceLastUpdate)
 			r.Update.Submit(u)
+
 			u.FrameNumber++
 			r.timeSinceLastUpdate = time.Now()
 		}

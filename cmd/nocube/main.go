@@ -87,10 +87,13 @@ func main() {
 	output := output.New(settings)
 	output.Init()
 
-	render := render.New(settings)
-	render.Start()
+	rend := render.New(settings)
+	rend.Start()
 
-	frame := frame.New(render)
+	/* 	t := make(chan render.Update)
+	   	rend.Update.Register(t) */
+
+	frame := frame.New(rend)
 	frame.SetBeat(60.0/30.0, 0)
 
 	Pipelines := pipelines.New(&frame, mapping)
@@ -98,9 +101,15 @@ func main() {
 	Pipelines.Add(test)
 
 	go func() {
-		for v := range frame.OnUpdate {
-			Pipelines.Process(v)
+
+		for {
+			select {
+			case v := <-frame.OnUpdate:
+				p := Pipelines.Process(v)
+				output.Write(*p)
+			}
 		}
+
 	}()
 
 	server := web.Server{}

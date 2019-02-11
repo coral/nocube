@@ -35,11 +35,14 @@ func New(newR *render.Render) F {
 
 	newF.renderHolder.Update.Register(newF.renderSignal)
 
-	go func() {
-		for v := range newF.renderSignal {
-			newF.Update(v)
+	go func(chan render.Update) {
+		for {
+			select {
+			case v := <-newF.renderSignal:
+				newF.Update(v)
+			}
 		}
-	}()
+	}(newF.renderSignal)
 
 	return newF
 }

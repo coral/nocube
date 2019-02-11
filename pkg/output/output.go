@@ -9,7 +9,7 @@ import (
 type Output interface {
 	Init()
 	ModuleName() string
-	Send([]pkg.ColorLookupResult)
+	Write([]pkg.ColorLookupResult)
 }
 
 type Controller struct {
@@ -42,5 +42,12 @@ func New(s *settings.Settings) *Controller {
 func (l *Controller) Init() {
 	for _, o := range l.o {
 		go o.Init()
+	}
+}
+
+//TODO make it actually resolve mapping here
+func (l *Controller) Write(d []pkg.ColorLookupResult) {
+	for _, ao := range l.o {
+		ao.Write(d)
 	}
 }
