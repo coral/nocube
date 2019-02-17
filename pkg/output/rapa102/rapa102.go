@@ -52,7 +52,7 @@ func (r *RAPA102) handlePixels() {
 					/* 					utils.Clamp255(color.Color[0] * 255),
 					   					utils.Clamp255(color.Color[1] * 255),
 					   					utils.Clamp255(color.Color[2] * 255), */
-					255, 0, 0,
+					100, 0, 0,
 				}...)
 			}
 

@@ -3,6 +3,7 @@ package output
 import (
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/output/rapa102"
+	"github.com/coral/nocube/pkg/output/ws"
 	"github.com/coral/nocube/pkg/settings"
 )
 
@@ -22,7 +23,7 @@ type Controller struct {
 
 func New(s *settings.Settings) *Controller {
 
-	availableModules := []Output{rapa102.New()}
+	availableModules := []Output{rapa102.New(), ws.New()}
 	var loadedModules []Output
 	for _, m := range availableModules {
 		for _, cm := range s.Global.Output.ActivatedOutputs {

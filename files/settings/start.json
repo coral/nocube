@@ -23,13 +23,16 @@
       }
     },
     "Output": {
-      "ActivatedOutputs": ["RAPA102"],
+      "ActivatedOutputs": ["RAPA102", "WS"],
       "RAPA102": [
         {
           "Identifier": "korv",
           "TargetFPS": 200
         }
-      ]
+      ],
+      "WS": {
+        "TargetFPS": 30
+      }
     }
   }
 }
