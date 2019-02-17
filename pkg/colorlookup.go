@@ -10,7 +10,7 @@ type ColorLookupParameters struct {
 }
 
 type ColorLookupResult struct {
-	Color vector.Vector3
+	Color vector.Vector3 `json:"C"`
 }
 
 type ColorLookup interface {

@@ -1,38 +1,38 @@
 {
-  "Path": "start",
-  "Global": {
-    "Mapping": {
-      "Path": "v2"
-    },
-    "Control": {
-      "Web": {
-        "Listen": "0.0.0.0:8080"
-      }
-    },
-    "Render": {
-      "InternalTargetFPS": 200
-    },
-    "Audio": {
-      "SampleRate": 48000,
-      "Channels": 1,
-      "BufSize": 512,
-      "BlockSize": 256,
-      "Beat": {
-        "Silence": -70,
-        "Threshold": 0.3
-      }
-    },
-    "Output": {
-      "ActivatedOutputs": ["RAPA102", "WS"],
-      "RAPA102": [
-        {
-          "Identifier": "korv",
-          "TargetFPS": 200
-        }
-      ],
-      "WS": {
-        "TargetFPS": 30
-      }
-    }
-  }
+	"Path": "start",
+	"Global": {
+		"Mapping": {
+			"Path": "v1"
+		},
+		"Control": {
+			"Web": {
+				"Listen": "0.0.0.0:8000"
+			}
+		},
+		"Render": {
+			"InternalTargetFPS": 200
+		},
+		"Audio": {
+			"SampleRate": 48000,
+			"Channels": 1,
+			"BufSize": 512,
+			"BlockSize": 256,
+			"Beat": {
+				"Silence": -70,
+				"Threshold": 0.3
+			}
+		},
+		"Output": {
+			"ActivatedOutputs": [
+				"RAPA102",
+				"WS"
+			],
+			"RAPA102": [
+				{
+					"Identifier": "korv",
+					"TargetFPS": 200
+				}
+			]
+		}
+	}
 }

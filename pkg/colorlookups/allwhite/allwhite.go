@@ -16,9 +16,9 @@ func (g *AllWhite) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, pa
 
 		results = append(results, pkg.ColorLookupResult{
 			Color: vector.Vector3{
-				1,
-				1,
-				1,
+				0.7,
+				0.0,
+				0.0,
 			},
 		})
 	}

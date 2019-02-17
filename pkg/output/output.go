@@ -11,6 +11,9 @@ type Output interface {
 	Init()
 	ModuleName() string
 	Write([]pkg.ColorLookupResult)
+
+	SetTargetFrameRate(int)
+	GetTargetFrameRate() int
 }
 
 type Controller struct {

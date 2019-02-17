@@ -12,10 +12,13 @@ import (
 type RMan struct {
 	registeredDevices []RAPA102
 	connectedDevices  []*RAPA102
+	targetFrameRate   int
 }
 
 func New() *RMan {
-	return &RMan{}
+	return &RMan{
+		targetFrameRate: 200,
+	}
 }
 
 func (rm *RMan) Init() {
@@ -65,6 +68,14 @@ func (rm *RMan) Init() {
 
 func (rm *RMan) ModuleName() string {
 	return "RAPA102"
+}
+
+func (rm *RMan) SetTargetFrameRate(i int) {
+	rm.targetFrameRate = i
+}
+
+func (rm *RMan) GetTargetFrameRate() int {
+	return rm.targetFrameRate
 }
 
 func (rm *RMan) Write(d []pkg.ColorLookupResult) {

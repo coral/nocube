@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/coral/nocube/pkg"
+	"github.com/coral/nocube/pkg/utils"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 )
@@ -47,12 +48,11 @@ func (r *RAPA102) handlePixels() {
 		select {
 		case p := <-r.PixelStream:
 			var bytes = []byte{}
-			for _, _ = range p {
+			for _, color := range p {
 				bytes = append(bytes, []byte{
-					/* 					utils.Clamp255(color.Color[0] * 255),
-					   					utils.Clamp255(color.Color[1] * 255),
-					   					utils.Clamp255(color.Color[2] * 255), */
-					100, 0, 0,
+					utils.Clamp255(color.Color[0] * 255),
+					utils.Clamp255(color.Color[1] * 255),
+					utils.Clamp255(color.Color[2] * 255),
 				}...)
 			}
 
