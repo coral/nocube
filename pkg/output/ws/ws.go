@@ -22,7 +22,7 @@ type writeBuffer struct {
 
 func New() *WS {
 	return &WS{
-		targetFrameRate: 60,
+		targetFrameRate: 30,
 	}
 }
 

@@ -28,6 +28,7 @@ func New(newR *render.Render) F {
 		Index:        0,
 		BeatDuration: 60.0 / 120.0,
 		BeatStart:    0.0,
+		Phase:        0.0,
 		renderHolder: newR,
 		renderSignal: make(chan render.Update),
 		OnUpdate:     make(chan *F),
@@ -47,7 +48,8 @@ func New(newR *render.Render) F {
 	return newF
 }
 func (f *F) Update(u render.Update) {
-	f.Timepoint = float64(u.TimeSinceStart * time.Millisecond)
+	f.Timepoint = float64(u.TimeSinceStart/time.Millisecond) / 1000
+
 	f.Phase = math.Mod((f.Timepoint-f.BeatStart)/f.BeatDuration, 1)
 	f.Index = u.FrameNumber
 

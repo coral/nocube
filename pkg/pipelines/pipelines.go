@@ -27,11 +27,12 @@ func (p *Pipelines) Process(f *frame.F) *[]pkg.ColorLookupResult {
 	p.frame = f
 	for _, pipeline := range p.Active {
 		data := pipeline.Process(p.frame, p.mapping)
+		//fmt.Println(len(data))
 		return &data
 		//Intensity
-		for i, d := range data {
-			data[i].Color = *d.Color.Scale(0.5)
-		}
+		// for i, d := range data {
+		// 	data[i].Color = *d.Color.Scale(0.5)
+		// }
 
 	}
 	return nil

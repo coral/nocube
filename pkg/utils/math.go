@@ -21,3 +21,11 @@ func Clamp255(v float64) byte {
 
 	return byte(v)
 }
+
+func Crush(v float64, threshold float64) float64 {
+	if v > threshold {
+		return 1
+	} else {
+		return v
+	}
+}

@@ -2,6 +2,12 @@
   <div>
     <div id="container" width="800" height="800"></div>
     <p></p>
+    <b-input-group prepend="X" class="mt-3">
+      <b-form-input v-model="rotX" type="range" min="0" max="10000"/>
+    </b-input-group>
+    <b-input-group prepend="Y" class="mt-3">
+      <b-form-input v-model="rotY" type="range" min="0" max="10000"/>
+    </b-input-group>
   </div>
 </template>
 
@@ -23,11 +29,9 @@ export default {
       mapping: null,
       group: null,
       pixelHolder: [],
-      mouseX: 0,
-      mouseY: 0,
-      windowHalfX: 0,
-      windowHalfY: 0,
-      gotData: false
+      gotData: false,
+      rotX: 0,
+      rotY: 0
     };
   },
   methods: {
@@ -35,24 +39,24 @@ export default {
       let container = document.getElementById("container");
 
       this.camera = new Three.PerspectiveCamera(70, 800 / 800, 0.01, 200);
-      this.camera.position.z = 3;
-      this.camera.position.x = 0.5;
-      this.camera.position.y = 0.5;
+      this.camera.position.z = 1.8;
+      this.camera.position.x = 0;
+      this.camera.position.y = 0;
 
       this.scene = new Three.Scene();
 
       var geometry = new Three.SphereGeometry(0.003, 32, 32);
-      var material = new Three.MeshBasicMaterial({
-        color: 0xffff00
-      });
 
       var group = new Three.Group();
       var pH = this.pixelHolder;
       mapping.forEach(function(pixel) {
+        var material = new Three.MeshBasicMaterial({
+          color: 0x000000
+        });
         var mesh = new Three.Mesh(geometry, material);
-        mesh.position.x = pixel.C[0];
-        mesh.position.y = pixel.C[1];
-        mesh.position.z = pixel.C[2];
+        mesh.position.x = -0.5 + pixel.C[0];
+        mesh.position.y = -0.5 + pixel.C[1];
+        mesh.position.z = -0.5 + pixel.C[2];
         mesh.setColor = function(r, g, b) {
           mesh.material.color = new Three.Color(r, g, b);
         };
@@ -84,18 +88,11 @@ export default {
 
       //this.camera.position.x += this.mouseX - this.camera.position.x;
       //this.camera.position.y += this.mouseY - this.camera.position.y;
-      this.group.rotation.x += 0.005;
-      this.group.rotation.y += 0.005;
-      this.group.rotation.z += 0.005;
+      this.group.rotation.x = this.rotX / 1000;
+      this.group.rotation.y = this.rotY / 1000;
+      //this.group.rotation.y += 0.005;
+      //this.group.rotation.z += 0.005;
       this.renderer.render(this.scene, this.camera);
-    },
-    mouseIsMoving(event) {
-      this.mouseX = (event.clientX - this.windowHalfX) * 10;
-      this.mouseY = (event.clientY - this.windowHalfY) * 10;
-    },
-    onWindowResize(event) {
-      this.windowHalfX = window.innerWidth / 2;
-      this.windowHalfY = window.innerHeight / 2;
     }
   },
   mounted() {
