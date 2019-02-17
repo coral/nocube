@@ -12,8 +12,7 @@ import (
 
 type Mapping struct {
 	Coordinates []pkg.Pixel
-
-	path string
+	path        string
 }
 
 func New(path string, numPixels uint) *Mapping {
@@ -36,6 +35,10 @@ func LoadNewFromFile(mappingName string) (*Mapping, error) {
 
 }
 func (m *Mapping) WriteFile() error {
+
+	for i := range m.Coordinates {
+		m.Coordinates[i].Index = int64(i)
+	}
 	data, err := m.MarshalJSON()
 	if err != nil {
 		return err

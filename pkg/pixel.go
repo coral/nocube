@@ -7,6 +7,7 @@ import (
 )
 
 type Pixel struct {
+	Index      int64          `json:"I"`
 	Active     bool           `json:"A"`
 	Coordinate vector.Vector3 `json:"C"`
 	Normal     vector.Vector3 `json:"N"`

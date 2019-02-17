@@ -2,7 +2,7 @@
 	"Path": "start",
 	"Global": {
 		"Mapping": {
-			"Path": "v1"
+			"Path": "v3"
 		},
 		"Control": {
 			"Web": {

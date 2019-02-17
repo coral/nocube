@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div id="container" width="500" height="500"></div>
-    <p>{{mapping}}</p>
+    <div id="container" width="800" height="800"></div>
+    <p></p>
   </div>
 </template>
 
@@ -12,7 +12,7 @@ import axios from "axios";
 export default {
   name: "Render",
   created: function() {
-    // this.$options.sockets.onmessage = data => console.log(data);
+    this.$options.sockets.onmessage = data => this.update(data);
   },
   data: function() {
     return {
@@ -22,30 +22,41 @@ export default {
       mesh: null,
       mapping: null,
       group: null,
+      pixelHolder: [],
       mouseX: 0,
       mouseY: 0,
       windowHalfX: 0,
-      windowHalfY: 0
+      windowHalfY: 0,
+      gotData: false
     };
   },
   methods: {
-    init: function() {
+    init: function(mapping) {
       let container = document.getElementById("container");
 
-      this.camera = new Three.PerspectiveCamera(70, 500 / 500, 0.01, 100);
-      this.camera.position.z = 1;
+      this.camera = new Three.PerspectiveCamera(70, 800 / 800, 0.01, 200);
+      this.camera.position.z = 3;
+      this.camera.position.x = 0.5;
+      this.camera.position.y = 0.5;
 
       this.scene = new Three.Scene();
 
       var geometry = new Three.SphereGeometry(0.003, 32, 32);
-      var material = new Three.MeshBasicMaterial({ color: 0xffff00 });
+      var material = new Three.MeshBasicMaterial({
+        color: 0xffff00
+      });
 
       var group = new Three.Group();
-      this.mapping.forEach(function(pixel) {
+      var pH = this.pixelHolder;
+      mapping.forEach(function(pixel) {
         var mesh = new Three.Mesh(geometry, material);
         mesh.position.x = pixel.C[0];
         mesh.position.y = pixel.C[1];
         mesh.position.z = pixel.C[2];
+        mesh.setColor = function(r, g, b) {
+          mesh.material.color = new Three.Color(r, g, b);
+        };
+        pH[pixel.I] = mesh;
         if (pixel.A) {
           group.add(mesh);
         }
@@ -55,9 +66,18 @@ export default {
 
       this.scene.add(this.group);
 
-      this.renderer = new Three.WebGLRenderer({ antialias: true });
-      this.renderer.setSize(500, 500);
+      this.renderer = new Three.WebGLRenderer({
+        antialias: true
+      });
+      this.renderer.setSize(800, 800);
       container.appendChild(this.renderer.domElement);
+    },
+    update: function(data) {
+      var pd = JSON.parse(data.data);
+      var pH = this.pixelHolder;
+      pd.forEach(function(value, i) {
+        pH[i].setColor(value.C[0], value.C[1], value.C[2]);
+      });
     },
     animate: function() {
       requestAnimationFrame(this.animate);
@@ -81,7 +101,7 @@ export default {
   mounted() {
     axios.get("http://127.0.0.1:8000/mapping").then(response => {
       this.mapping = response.data;
-      this.init();
+      this.init(this.mapping);
       this.animate();
     });
 

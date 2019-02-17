@@ -97,7 +97,7 @@ func main() {
 	frame.SetBeat(60.0/30.0, 0)
 
 	Pipelines := pipelines.New(&frame, mapping)
-	test := pipeline.New("zebra", "allwhite")
+	test := pipeline.New("edgelord", "allwhite")
 	Pipelines.Add(test)
 
 	go func() {
