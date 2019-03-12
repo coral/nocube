@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+
+	"github.com/coral/nocube/pkg/audio"
 	"github.com/coral/nocube/pkg/control/web"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/mapping"
@@ -74,10 +77,17 @@ func main() {
 
 	log.Debug(settings)
 
-	// a := audio.New(settings)
-	// a.Init()
-	// defer a.Close()
-	// go a.Process()
+	a := audio.New(settings)
+	a.Init()
+	defer a.Close()
+	go a.Process()
+
+	go func() {
+		for {
+			t := <-a.TempoStream
+			fmt.Println(t)
+		}
+	}()
 
 	mapping, err := mapping.LoadNewFromFile(settings.Global.Mapping.Path)
 	if err != nil {
@@ -97,7 +107,7 @@ func main() {
 	frame.SetBeat(60.0/30.0, 0)
 
 	Pipelines := pipelines.New(&frame, mapping)
-	test := pipeline.New("zebra", "dummy")
+	test := pipeline.New("zebra", "allwhite")
 	Pipelines.Add(test)
 
 	go func() {
