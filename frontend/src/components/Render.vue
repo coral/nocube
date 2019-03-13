@@ -30,8 +30,8 @@ export default {
       group: null,
       pixelHolder: [],
       gotData: false,
-      rotX: 0,
-      rotY: 0
+      rotX: 450,
+      rotY: 800
     };
   },
   methods: {

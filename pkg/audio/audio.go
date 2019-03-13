@@ -10,17 +10,27 @@ import (
 type Audio struct {
 	s     *settings.Settings
 	Input Input
+
+	TempoStream chan T
 }
 
 type Input struct {
 	ProcessedSamples int64
 	Buffer           []float32
 	Stream           *portaudio.Stream
+	Tempo            *aubio.Tempo
+}
+
+type T struct {
+	Beat       float64
+	Tempo      float64
+	Confidence float64
 }
 
 func New(s *settings.Settings) *Audio {
 	return &Audio{
-		s: s,
+		s:           s,
+		TempoStream: make(chan T),
 		Input: Input{
 			ProcessedSamples: 0,
 		},
@@ -45,6 +55,12 @@ func (a *Audio) Init() error {
 	}
 	a.Input.Stream = t
 
+	a.Input.Tempo = aubio.TempoOrDie(aubio.SpecDiff,
+		a.s.Global.Audio.BufSize,
+		a.s.Global.Audio.BlockSize,
+		uint(a.s.Global.Audio.SampleRate))
+	a.Input.Tempo.SetSilence(-70.0)
+
 	return nil
 }
 
@@ -68,10 +84,24 @@ func (a *Audio) Process() {
 		} else {
 			a.Input.ProcessedSamples += int64(len(a.Input.Buffer))
 			convertedBuffer := convertTo64(a.Input.Buffer)
-			aubio.NewSimpleBufferData(a.s.Global.Audio.BufSize, convertedBuffer)
-
+			b := aubio.NewSimpleBufferData(a.s.Global.Audio.BufSize, convertedBuffer)
+			a.processTempo(b)
 		}
 		//go lel(in)
+	}
+}
+
+func (a *Audio) processTempo(b *aubio.SimpleBuffer) {
+	a.Input.Tempo.Do(b)
+	for _, f := range a.Input.Tempo.Buffer().Slice() {
+		if f != 0 {
+
+			a.TempoStream <- T{
+				Beat:       f,
+				Tempo:      a.Input.Tempo.GetBpm(),
+				Confidence: a.Input.Tempo.GetConfidence(),
+			}
+		}
 	}
 }
 
