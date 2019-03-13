@@ -66,7 +66,7 @@ func (a *Audio) Init() error {
 	a.Input.Onset.SetSilence(-70.0)
 	a.Input.Onset.SetThreshold(-1.0)
 
-	a.Input.FFT = aubio.NewFFT(256)
+	a.Input.FFT = aubio.NewFFT(512)
 
 	// a.Input.BeatTracker = aubio.BeatTrackerOrDie(a.s.Global.Audio.BufSize,
 	// 	a.s.Global.Audio.BlockSize,
@@ -130,6 +130,7 @@ func (a *Audio) processOnset(b *aubio.SimpleBuffer) {
 
 func (a *Audio) processFFT(b *aubio.SimpleBuffer) {
 	a.Input.FFT.Do(b)
+	//fmt.Println(a.Input.FFT.Buffer().Norm())
 }
 
 // func (a *Audio) processBeatTrack(b *aubio.SimpleBuffer) {
