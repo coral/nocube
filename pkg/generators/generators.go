@@ -2,6 +2,7 @@ package generators
 
 import (
 	"github.com/coral/nocube/pkg"
+	"github.com/coral/nocube/pkg/generators/beat"
 	"github.com/coral/nocube/pkg/generators/edgelord"
 	"github.com/coral/nocube/pkg/generators/strobe"
 	"github.com/coral/nocube/pkg/generators/xd"
@@ -13,4 +14,5 @@ var Generators = map[string]pkg.Generator{
 	"edgelord": &edgelord.Edgelord{},
 	"zebra":    &zebra.Zebra{},
 	"strobe":   &strobe.Strobe{},
+	"beat":     &beat.Beat{},
 }
