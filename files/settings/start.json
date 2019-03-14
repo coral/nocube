@@ -15,13 +15,13 @@
     "Audio": {
       "SampleRate": 48000,
       "Channels": 1,
-      "BufSize": 512,
+      "BufSize": 256,
       "BlockSize": 256,
       "Beat": {
         "Silence": -70,
         "Threshold": 0.3
       },
-      "FFTSize": 256
+      "FFTSize": 1024
     },
     "Output": {
       "ActivatedOutputs": ["RAPA102", "WS"],
