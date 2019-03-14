@@ -4,6 +4,7 @@ import (
 	"math"
 	"time"
 
+	"github.com/coral/nocube/pkg/audio"
 	"github.com/coral/nocube/pkg/render"
 )
 
@@ -16,13 +17,16 @@ type F struct {
 
 	Phase float64
 
+	FFT []float64
+
 	renderHolder *render.Render
 	renderSignal chan render.Update
+	audioHolder  *audio.Audio
 
 	OnUpdate chan *F
 }
 
-func New(newR *render.Render) F {
+func New(newR *render.Render, audio *audio.Audio) F {
 
 	newF := F{
 		Index:        0,
@@ -31,7 +35,9 @@ func New(newR *render.Render) F {
 		Phase:        0.0,
 		renderHolder: newR,
 		renderSignal: make(chan render.Update),
+		audioHolder:  audio,
 		OnUpdate:     make(chan *F),
+		FFT:          make([]float64, 128),
 	}
 
 	newF.renderHolder.Update.Register(newF.renderSignal)
@@ -48,10 +54,15 @@ func New(newR *render.Render) F {
 	return newF
 }
 func (f *F) Update(u render.Update) {
+
+	if f.audioHolder.Tempo.Confidence > 0.05 {
+		f.BeatDuration = 60 / f.audioHolder.Tempo.Tempo
+	}
 	f.Timepoint = float64(u.TimeSinceStart/time.Millisecond) / 1000
 
 	f.Phase = math.Mod((f.Timepoint-f.BeatStart)/f.BeatDuration, 1)
 	f.Index = u.FrameNumber
+	f.FFT = f.audioHolder.FFT
 
 	f.OnUpdate <- f
 }

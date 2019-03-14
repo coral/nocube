@@ -34,6 +34,7 @@ type Settings struct {
 				Silence   float32
 				Threshold float32
 			}
+			FFTSize int
 		}
 		Output struct {
 			ActivatedOutputs []string
