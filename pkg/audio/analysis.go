@@ -50,7 +50,7 @@ func (a *analysis) Init(s *settings.Settings) {
 
 func (a *analysis) Do(b *aubio.SimpleBuffer) {
 	a.processTempo(b)
-	a.processOnset(b)
+	//a.processOnset(b)
 	a.processFFT(b)
 }
 

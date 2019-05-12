@@ -18,7 +18,7 @@ func (g *Beat) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.Generator
 			})
 		} else {
 			result = append(result, pkg.GeneratorResult{
-				Intensity: 1.0 * f.Phase,
+				Intensity: 1.0,
 			})
 
 		}
