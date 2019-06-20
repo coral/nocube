@@ -23,6 +23,9 @@ var upgrader = websocket.Upgrader{} // use default options
 var dataline1 = apa102.Dev{}
 var dataline2 = apa102.Dev{}
 
+var dc1 chan []byte
+var dc2 chan []byte
+
 func data(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -40,9 +43,11 @@ func data(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		if message[len(message)-1] == 0x00 {
-			go dataline1.Write(message[:len(message)-1])
+			d := message[:len(message)-1]
+			dc1 <- d
 		} else {
-			go dataline2.Write(message[:len(message)-1])
+			d := message[:len(message)-1]
+			dc2 <- d
 		}
 	}
 }
@@ -51,6 +56,9 @@ func main() {
 
 	flag.Parse()
 	log.SetFlags(0)
+
+	dc1 = make(chan []byte)
+	dc2 = make(chan []byte)
 
 	server, err := zeroconf.Register(*bridgename, "_apabridge._tcp", "local.", *port, []string{"txtv=0", "lo=1", "la=2"}, nil)
 	if err != nil {
@@ -98,6 +106,23 @@ func main() {
 	}
 
 	dataline2 = *b
+
+	go func() {
+		for {
+			select {
+			case d := <-dc1:
+				dataline1.Write(d)
+			}
+		}
+	}()
+	go func() {
+		for {
+			select {
+			case d := <-dc2:
+				dataline2.Write(d)
+			}
+		}
+	}()
 
 	http.HandleFunc("/data", data)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(*port), nil))

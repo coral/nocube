@@ -66,8 +66,8 @@ func (r *RAPA102) handlePixels() {
 				}
 			}
 
-			r.conn.WriteMessage(websocket.BinaryMessage, append(b1, 0x00)
-			r.conn.WriteMessage(websocket.BinaryMessage, append(b1, 0x01))
+			r.conn.WriteMessage(websocket.BinaryMessage, append(b1, 0x00))
+			r.conn.WriteMessage(websocket.BinaryMessage, append(b2, 0x01))
 		}
 	}
 }
