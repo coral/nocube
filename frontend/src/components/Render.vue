@@ -82,9 +82,10 @@ export default {
       pd.forEach(function(value, i) {
         pH[i].setColor(value.C[0], value.C[1], value.C[2]);
       });
+      this.animate();
     },
     animate: function() {
-      requestAnimationFrame(this.animate);
+      //requestAnimationFrame(this.animate);
 
       //this.camera.position.x += this.mouseX - this.camera.position.x;
       //this.camera.position.y += this.mouseY - this.camera.position.y;

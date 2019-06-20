@@ -19,7 +19,8 @@ var bridgename = flag.String("bridgename", "korv", "name of bridge for discovery
 
 var upgrader = websocket.Upgrader{} // use default options
 
-var ba = apa102.Dev{}
+var dataline1 = apa102.Dev{}
+var dataline2 = apa102.Dev{}
 
 func data(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
@@ -28,13 +29,20 @@ func data(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer c.Close()
+	var message []byte
+	var erro error
 	for {
-		_, message, err := c.ReadMessage()
-		if err != nil {
-			log.Println("read:", err)
+		_, message, erro = c.ReadMessage()
+		if erro != nil {
+			log.Println("read:", erro)
+			erro = nil
 			break
 		}
-		ba.Write(message)
+		if message[len(message)] == 0x00 {
+			dataline1.Write(message[:len(message)-1])
+		} else {
+			dataline2.Write(message[:len(message)-1])
+		}
 	}
 }
 
@@ -54,22 +62,39 @@ func main() {
 	}
 
 	ports := spireg.All()
-	s, err := spireg.Open(ports[0].Name)
+
+	//dataline 1
+	s1, err := spireg.Open(ports[0].Name)
 	if err != nil {
 		panic(err)
 	}
 
 	opts := apa102.DefaultOpts
-	opts.NumPixels = 32
+	opts.NumPixels = 432
 	opts.Intensity = 255
-	a, err := apa102.New(s, &opts)
+	a, err := apa102.New(s1, &opts)
 	defer a.Halt()
 
 	if err != nil {
 		panic(err)
 	}
 
-	ba = *a
+	dataline1 = *a
+
+	//dataline 2
+	s2, err := spireg.Open(ports[1].Name)
+	if err != nil {
+		panic(err)
+	}
+
+	b, err := apa102.New(s2, &opts)
+	defer b.Halt()
+
+	if err != nil {
+		panic(err)
+	}
+
+	dataline2 = *b
 
 	http.HandleFunc("/data", data)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(*port), nil))

@@ -22,10 +22,19 @@ func Clamp255(v float64) byte {
 	return byte(v)
 }
 
+//Crush will return 1 if over the threshold
 func Crush(v float64, threshold float64) float64 {
 	if v > threshold {
 		return 1
 	} else {
 		return v
+	}
+}
+
+func Threshold(v float64, threshold float64) float64 {
+	if v > threshold {
+		return v
+	} else {
+		return 0
 	}
 }

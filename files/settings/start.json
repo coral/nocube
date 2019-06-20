@@ -2,7 +2,7 @@
 	"Path": "start",
 	"Global": {
 		"Mapping": {
-			"Path": "v3"
+			"Path": "v4"
 		},
 		"Control": {
 			"Web": {
@@ -10,7 +10,7 @@
 			}
 		},
 		"Render": {
-			"InternalTargetFPS": 200
+			"InternalTargetFPS": 330
 		},
 		"Audio": {
 			"SampleRate": 48000,
@@ -31,7 +31,7 @@
 			"RAPA102": [
 				{
 					"Identifier": "korv",
-					"TargetFPS": 200
+					"TargetFPS": 330
 				}
 			]
 		}

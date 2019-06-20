@@ -1,16 +1,16 @@
-package beat
+package solid
 
 import (
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/frame"
 )
 
-type Beat struct {
+type Solid struct {
 }
 
-var _ pkg.Generator = &Beat{}
+var _ pkg.Generator = &Solid{}
 
-func (g *Beat) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.GeneratorParameters) (result []pkg.GeneratorResult) {
+func (g *Solid) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.GeneratorParameters) (result []pkg.GeneratorResult) {
 	for _, pixel := range pixels {
 		if !pixel.Active {
 			result = append(result, pkg.GeneratorResult{
@@ -18,11 +18,15 @@ func (g *Beat) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.Generator
 			})
 		} else {
 			result = append(result, pkg.GeneratorResult{
-				Intensity: f.Phase,
+				Intensity: 1,
 			})
 
 		}
 	}
 
 	return
+}
+
+func (g *Solid) Settings() {
+
 }

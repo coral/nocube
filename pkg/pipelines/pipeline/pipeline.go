@@ -9,15 +9,17 @@ import (
 )
 
 type Pipeline struct {
-	Gen   pkg.Generator
-	Color pkg.ColorLookup
+	Opacity float32
+	Gen     pkg.Generator
+	Color   pkg.ColorLookup
 }
 
 func New(genName string, colorName string) *Pipeline {
 
 	return &Pipeline{
-		Gen:   generators.Generators[genName],
-		Color: colorlookups.ColorLookups[colorName],
+		Opacity: 1.0,
+		Gen:     generators.Generators[genName],
+		Color:   colorlookups.ColorLookups[colorName],
 	}
 
 }
