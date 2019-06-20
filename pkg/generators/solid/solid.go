@@ -18,7 +18,7 @@ func (g *Solid) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.Generato
 			})
 		} else {
 			result = append(result, pkg.GeneratorResult{
-				Intensity: 0.2,
+				Intensity: 0.9,
 			})
 
 		}

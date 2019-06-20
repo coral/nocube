@@ -16,15 +16,13 @@ import (
 )
 
 var port = flag.Int("port", 12500, "listen port")
-var bridgename = flag.String("bridgename", "korv", "name of bridge for discovery")
+var bridgename = flag.String("bridgename", "first", "name of bridge for discovery")
 
 var upgrader = websocket.Upgrader{} // use default options
 
 var dataline1 = apa102.Dev{}
-var dataline2 = apa102.Dev{}
 
 var dc1 chan []byte
-var dc2 chan []byte
 
 func data(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
@@ -42,13 +40,9 @@ func data(w http.ResponseWriter, r *http.Request) {
 			erro = nil
 			break
 		}
-		if message[len(message)-1] == 0x00 {
-			d := message[:len(message)-1]
-			dc1 <- d
-		} else {
-			d := message[:len(message)-1]
-			dc2 <- d
-		}
+
+		dc1 <- message
+
 	}
 }
 
@@ -58,7 +52,6 @@ func main() {
 	log.SetFlags(0)
 
 	dc1 = make(chan []byte)
-	dc2 = make(chan []byte)
 
 	server, err := zeroconf.Register(*bridgename, "_apabridge._tcp", "local.", *port, []string{"txtv=0", "lo=1", "la=2"}, nil)
 	if err != nil {
@@ -92,34 +85,11 @@ func main() {
 
 	dataline1 = *a
 
-	//dataline 2
-	s2, err := spireg.Open("/dev/spidev1.0")
-	if err != nil {
-		panic(err)
-	}
-
-	b, err := apa102.New(s2, &opts)
-	defer b.Halt()
-
-	if err != nil {
-		panic(err)
-	}
-
-	dataline2 = *b
-
 	go func() {
 		for {
 			select {
 			case d := <-dc1:
 				dataline1.Write(d)
-			}
-		}
-	}()
-	go func() {
-		for {
-			select {
-			case d := <-dc2:
-				dataline2.Write(d)
 			}
 		}
 	}()
