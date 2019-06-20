@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -38,10 +39,10 @@ func data(w http.ResponseWriter, r *http.Request) {
 			erro = nil
 			break
 		}
-		if message[len(message)] == 0x00 {
-			dataline1.Write(message[:len(message)-1])
+		if message[len(message)-1] == 0x00 {
+			go dataline1.Write(message[:len(message)-1])
 		} else {
-			dataline2.Write(message[:len(message)-1])
+			go dataline2.Write(message[:len(message)-1])
 		}
 	}
 }
@@ -62,9 +63,11 @@ func main() {
 	}
 
 	ports := spireg.All()
-
+	for _, element := range ports {
+		fmt.Println(element.Name)
+	}
 	//dataline 1
-	s1, err := spireg.Open(ports[0].Name)
+	s1, err := spireg.Open("/dev/spidev0.0")
 	if err != nil {
 		panic(err)
 	}
@@ -82,7 +85,7 @@ func main() {
 	dataline1 = *a
 
 	//dataline 2
-	s2, err := spireg.Open(ports[1].Name)
+	s2, err := spireg.Open("/dev/spidev1.0")
 	if err != nil {
 		panic(err)
 	}
