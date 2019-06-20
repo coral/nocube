@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"periph.io/x/periph/devices/apa102"
@@ -48,12 +49,13 @@ func data(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
+	hsname, _ := os.Hostname()
 	flag.Parse()
 	log.SetFlags(0)
 
 	dc1 = make(chan []byte)
 
-	server, err := zeroconf.Register(*bridgename, "_apabridge._tcp", "local.", *port, []string{"txtv=0", "lo=1", "la=2"}, nil)
+	server, err := zeroconf.Register(hsname, "_apabridge._tcp", "local.", *port, []string{"txtv=0", "lo=1", "la=2"}, nil)
 	if err != nil {
 		panic(err)
 	}
