@@ -70,7 +70,7 @@ func main() {
 		panic(err)
 	}
 
-	opts := apa102.DefaultOpts
+	opts := apa102.PassThruOpts
 	opts.NumPixels = 432
 	opts.Intensity = 255
 	a, err := apa102.New(s1, &opts)

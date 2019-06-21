@@ -2,6 +2,7 @@ package rapa102
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/coral/nocube/pkg"
@@ -30,6 +31,7 @@ func (rm *RMan) Init() {
 	entries := make(chan *zeroconf.ServiceEntry)
 	go func(results <-chan *zeroconf.ServiceEntry) {
 		for entry := range results {
+			fmt.Println(entry)
 			log.WithFields(log.Fields{
 				"Name": entry.ServiceRecord.Instance,
 				"IP":   entry.AddrIPv4[0],
@@ -79,7 +81,12 @@ func (rm *RMan) GetTargetFrameRate() int {
 }
 
 func (rm *RMan) Write(d []pkg.ColorLookupResult) {
-	for _, conectedRAPA102 := range rm.connectedDevices {
-		conectedRAPA102.PixelStream <- d
+	for _, connectedRAPA102 := range rm.connectedDevices {
+		if connectedRAPA102.Name == "first" {
+			connectedRAPA102.PixelStream <- d[:432]
+		}
+		if connectedRAPA102.Name == "second" {
+			connectedRAPA102.PixelStream <- d[432:]
+		}
 	}
 }

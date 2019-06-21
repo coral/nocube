@@ -36,13 +36,22 @@ func (g *FFT) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, paramet
 		if index < numFFT {
 			mi = f.FFT[index] / float64(dv)
 		}
-		//fmt.Println(mi)
 		d := pixel.Intensity
+		var r = 0.0
+		var g = d * mi
+		var b = 0.0
+
+		if f.Phase > 0.90 && f.Confidence > 0.1 {
+			r = 1.0 * mi
+			g = 1.0 * mi
+			b = 1.0 * mi
+		}
+		//fmt.Println(mi)
 		results = append(results, pkg.ColorLookupResult{
 			Color: vector.Vector3{
-				d * mi,
-				d * mi,
-				d * mi,
+				r,
+				g,
+				b,
 			},
 		})
 		p = p + 0.001

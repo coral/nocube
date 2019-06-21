@@ -9,17 +9,21 @@ import (
 )
 
 type Pipeline struct {
-	Opacity float32
-	Gen     pkg.Generator
-	Color   pkg.ColorLookup
+	Name      string
+	Opacity   float64
+	Gen       pkg.Generator
+	Color     pkg.ColorLookup
+	BlendMode string
 }
 
-func New(genName string, colorName string) *Pipeline {
+func New(name string, opacity float64, genName string, colorName string, blendMode string) *Pipeline {
 
 	return &Pipeline{
-		Opacity: 1.0,
-		Gen:     generators.Generators[genName],
-		Color:   colorlookups.ColorLookups[colorName],
+		Name:      name,
+		Opacity:   opacity,
+		Gen:       generators.Generators[genName],
+		Color:     colorlookups.ColorLookups[colorName],
+		BlendMode: blendMode,
 	}
 
 }
@@ -27,6 +31,8 @@ func New(genName string, colorName string) *Pipeline {
 func (p *Pipeline) Process(f *frame.F, m *mapping.Mapping) []pkg.ColorLookupResult {
 	g := p.Gen.Generate(m.Coordinates, f, pkg.GeneratorParameters{})
 	c := p.Color.Lookup(g, f, pkg.ColorLookupParameters{})
-
+	for i, d := range c {
+		c[i].Color = *d.Color.Scale(p.Opacity)
+	}
 	return c
 }

@@ -67,6 +67,9 @@ export default {
       });
 
       this.group = group;
+      this.group.rotation.z -= 0;
+      this.group.rotation.y -= 0;
+      this.group.rotation.x -= 0;
 
       this.scene.add(this.group);
 
@@ -89,8 +92,8 @@ export default {
 
       //this.camera.position.x += this.mouseX - this.camera.position.x;
       //this.camera.position.y += this.mouseY - this.camera.position.y;
-      this.group.rotation.x = this.rotX / 1000;
-      this.group.rotation.y = this.rotY / 1000;
+      //this.group.rotation.x = this.rotX / 1000;
+      //this.group.rotation.y = this.rotY / 1000;
       //this.group.rotation.y += 0.005;
       //this.group.rotation.z += 0.005;
       this.renderer.render(this.scene, this.camera);

@@ -1,6 +1,8 @@
 package audio
 
 import (
+	"time"
+
 	aubio "github.com/coral/aubio-go"
 	"github.com/coral/nocube/pkg/settings"
 	"github.com/gordonklaus/portaudio"
@@ -12,8 +14,9 @@ type Audio struct {
 	Input    Input
 	Analysis analysis
 
-	Tempo Tempo
-	FFT   []float64
+	Tempo    Tempo
+	LastBeat time.Time
+	FFT      []float64
 }
 
 type Input struct {
@@ -56,6 +59,7 @@ func (a *Audio) Init() error {
 	go func() {
 		for {
 			a.Tempo = <-a.Analysis.TempoStream
+			a.LastBeat = time.Now()
 
 		}
 	}()

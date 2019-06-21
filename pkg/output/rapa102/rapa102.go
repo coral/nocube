@@ -44,30 +44,21 @@ func (r *RAPA102) Connect() error {
 	return nil
 }
 func (r *RAPA102) handlePixels() {
-	magicvalue := 432
 	for {
 		select {
 		case p := <-r.PixelStream:
 			var b1 = []byte{}
-			var b2 = []byte{}
-			for i, color := range p {
-				if i < magicvalue {
-					b1 = append(b1, []byte{
-						utils.Clamp255(color.Color[0] * 255),
-						utils.Clamp255(color.Color[1] * 255),
-						utils.Clamp255(color.Color[2] * 255),
-					}...)
-				} else {
-					b2 = append(b2, []byte{
-						utils.Clamp255(color.Color[0] * 255),
-						utils.Clamp255(color.Color[1] * 255),
-						utils.Clamp255(color.Color[2] * 255),
-					}...)
-				}
+			for _, color := range p {
+
+				b1 = append(b1, []byte{
+					utils.Clamp255(color.Color[0] * 255),
+					utils.Clamp255(color.Color[1] * 255),
+					utils.Clamp255(color.Color[2] * 255),
+				}...)
+
 			}
 
-			r.conn.WriteMessage(websocket.BinaryMessage, append(b1, 0x00))
-			r.conn.WriteMessage(websocket.BinaryMessage, append(b2, 0x01))
+			r.conn.WriteMessage(websocket.BinaryMessage, b1)
 		}
 	}
 }

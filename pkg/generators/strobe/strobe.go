@@ -12,7 +12,7 @@ type Strobe struct {
 var _ pkg.Generator = &Strobe{}
 
 func (g *Strobe) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.GeneratorParameters) (result []pkg.GeneratorResult) {
-	_, r := f.GetSegment(1)
+	_, r := f.GetSegment(4)
 	for _, pixel := range pixels {
 		if !pixel.Active {
 			result = append(result, pkg.GeneratorResult{

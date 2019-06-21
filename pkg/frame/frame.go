@@ -22,6 +22,7 @@ type F struct {
 	renderHolder *render.Render
 	renderSignal chan render.Update
 	audioHolder  *audio.Audio
+	Confidence   float64
 
 	OnUpdate chan *F
 }
@@ -38,6 +39,7 @@ func New(newR *render.Render, audio *audio.Audio) F {
 		audioHolder:  audio,
 		OnUpdate:     make(chan *F),
 		FFT:          make([]float64, 128),
+		Confidence:   0.0,
 	}
 
 	newF.renderHolder.Update.Register(newF.renderSignal)
@@ -55,12 +57,21 @@ func New(newR *render.Render, audio *audio.Audio) F {
 }
 func (f *F) Update(u render.Update) {
 
+	f.BeatStart = 0
 	if f.audioHolder.Tempo.Confidence > 0.05 {
 		f.BeatDuration = 60 / f.audioHolder.Tempo.Tempo
+		f.BeatStart = float64(time.Since(f.audioHolder.LastBeat)/time.Millisecond) / 1000
 	}
-	f.Timepoint = float64(u.TimeSinceStart/time.Millisecond) / 1000
 
-	f.Phase = math.Mod((f.Timepoint-f.BeatStart)/f.BeatDuration, 1)
+	f.Confidence = f.audioHolder.Tempo.Confidence
+	f.Timepoint = float64(u.TimeSinceStart/time.Millisecond) / 1000
+	//fmt.Println(f.Timepoint, f.BeatStart, f.BeatDuration)
+
+	f.Phase = math.Mod((f.Timepoint)/f.BeatDuration, 1)
+	if f.audioHolder.Tempo.Confidence > 0.05 {
+		f.Phase = math.Mod(f.BeatStart/f.BeatDuration, 1)
+	}
+
 	f.Index = u.FrameNumber
 	f.FFT = f.audioHolder.FFT
 

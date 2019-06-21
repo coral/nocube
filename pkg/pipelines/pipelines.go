@@ -1,6 +1,8 @@
 package pipelines
 
 import (
+	"fmt"
+
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/mapping"
@@ -22,22 +24,20 @@ func New(f *frame.F, m *mapping.Mapping) *Pipelines {
 }
 
 func (p *Pipelines) Process(f *frame.F) *[]pkg.ColorLookupResult {
-	//var outputBuffer []pkg.ColorLookupResult
-	p.frame = f
+	outputBuffer := make([]pkg.ColorLookupResult, 864)
+	for i := range outputBuffer {
+		outputBuffer[i] = pkg.ColorLookupResult{}
+	}
+
 	for _, pipeline := range p.Active {
 		data := pipeline.Process(p.frame, p.mapping)
-		//fmt.Println(len(data))
-		//Intensity
-		/* 		for i, d := range data {
-			data[i].Color = *d.Color.Scale(d.Opacity)
-		} */
-
-		return &data
+		fmt.Println(data)
+		outputBuffer = BlendModes[pipeline.BlendMode](outputBuffer, data, 0.0)
 
 	}
-	return nil
+	return &outputBuffer
 }
 
 func (p *Pipelines) Add(newPipeline *pipeline.Pipeline) {
-	p.Active["first"] = newPipeline
+	p.Active[newPipeline.Name] = newPipeline
 }
