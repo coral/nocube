@@ -60,7 +60,7 @@ func main() {
 	cp := pipeline.New("olof", 1.0, "strobe", "colorize", "add")
 	Pipelines.Add(cp)
 
-	test := pipeline.New("denis", 1.0, "zebra", "dummy", "screen")
+	test := pipeline.New("denis", 0.0, "zebra", "dummy", "screen")
 	Pipelines.Add(test)
 
 	go func() {

@@ -14,7 +14,6 @@ type RMan struct {
 	registeredDevices []RAPA102
 	connectedDevices  []*RAPA102
 	targetFrameRate   int
-	frame             uint64
 }
 
 func New() *RMan {
@@ -65,13 +64,6 @@ func (rm *RMan) Init() {
 	if err != nil {
 		log.Fatalln("Failed to browse:", err.Error())
 	}
-	ticker := time.NewTicker(5 * time.Second)
-	go func() {
-		for _ = range ticker.C {
-			fmt.Println(rm.frame)
-
-		}
-	}()
 
 	<-ctx.Done()
 }
@@ -89,7 +81,6 @@ func (rm *RMan) GetTargetFrameRate() int {
 }
 
 func (rm *RMan) Write(d []pkg.ColorLookupResult) {
-	rm.frame++
 	for _, connectedRAPA102 := range rm.connectedDevices {
 		if connectedRAPA102.Name == "first" {
 			connectedRAPA102.PixelStream <- d[:432]
