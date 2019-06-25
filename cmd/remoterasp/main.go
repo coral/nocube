@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"periph.io/x/periph/devices/apa102"
 
@@ -19,18 +20,18 @@ import (
 var port = flag.Int("port", 12500, "listen port")
 var bridgename = flag.String("bridgename", "first", "name of bridge for discovery")
 
-var upgrader = websocket.Upgrader{} // use default options
-
 var dataline1 = apa102.Dev{}
+var message []byte
+var FrameNumber uint64 = 0
 
 func data(w http.ResponseWriter, r *http.Request) {
+	var upgrader = websocket.Upgrader{}
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
 		return
 	}
 	defer c.Close()
-	var message []byte
 	var erro error
 	for {
 		_, message, erro = c.ReadMessage()
@@ -39,6 +40,7 @@ func data(w http.ResponseWriter, r *http.Request) {
 			erro = nil
 			break
 		}
+		FrameNumber++
 		dataline1.Write(message)
 
 	}
@@ -49,6 +51,17 @@ func main() {
 	hsname, _ := os.Hostname()
 	flag.Parse()
 	log.SetFlags(0)
+	ticker := time.NewTicker(5 * time.Second)
+
+	var m uint64 = 0
+	go func() {
+		for _ = range ticker.C {
+			d := FrameNumber - m
+			fmt.Println("System FPS: ", d/5)
+			m = FrameNumber
+
+		}
+	}()
 
 	server, err := zeroconf.Register(hsname, "_apabridge._tcp", "local.", *port, []string{"txtv=0", "lo=1", "la=2"}, nil)
 	if err != nil {
