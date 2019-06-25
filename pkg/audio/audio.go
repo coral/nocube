@@ -14,9 +14,10 @@ type Audio struct {
 	Input    Input
 	Analysis analysis
 
-	Tempo    Tempo
-	LastBeat time.Time
-	FFT      []float64
+	Tempo      Tempo
+	LastBeat   time.Time
+	BeatNumber int64
+	FFT        []float64
 }
 
 type Input struct {
@@ -60,6 +61,7 @@ func (a *Audio) Init() error {
 		for {
 			a.Tempo = <-a.Analysis.TempoStream
 			a.LastBeat = time.Now()
+			a.BeatNumber = a.BeatNumber + 1
 
 		}
 	}()

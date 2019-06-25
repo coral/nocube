@@ -14,6 +14,7 @@ type F struct {
 
 	BeatDuration float64
 	BeatStart    float64
+	BeatCycle    float64
 
 	Phase float64
 
@@ -33,6 +34,7 @@ func New(newR *render.Render, audio *audio.Audio) F {
 		Index:        0,
 		BeatDuration: 60.0 / 120.0,
 		BeatStart:    0.0,
+		BeatCycle:    0.0,
 		Phase:        0.0,
 		renderHolder: newR,
 		renderSignal: make(chan render.Update),
@@ -63,9 +65,10 @@ func (f *F) Update(u render.Update) {
 		f.BeatStart = float64(time.Since(f.audioHolder.LastBeat)/time.Millisecond) / 1000
 	}
 
+	f.BeatCycle = 0.0
+
 	f.Confidence = f.audioHolder.Tempo.Confidence
 	f.Timepoint = float64(u.TimeSinceStart/time.Millisecond) / 1000
-	//fmt.Println(f.Timepoint, f.BeatStart, f.BeatDuration)
 
 	f.Phase = math.Mod((f.Timepoint)/f.BeatDuration, 1)
 	if f.audioHolder.Tempo.Confidence > 0.05 {
@@ -74,7 +77,6 @@ func (f *F) Update(u render.Update) {
 
 	f.Index = u.FrameNumber
 	f.FFT = f.audioHolder.FFT
-
 	f.OnUpdate <- f
 }
 
@@ -109,4 +111,15 @@ func (f *F) GetSegment(numSegments uint64) (segmentIndex uint64, remainder float
 	remainder = math.Mod(float64(numSegments)*f.Phase, 1)
 
 	return
+}
+
+func (f *F) GetBeat(beat uint64, offset uint64) bool {
+
+	d := math.Mod(float64(f.audioHolder.BeatNumber), 4)
+	if d == float64(offset) {
+		return true
+	} else {
+		return false
+	}
+
 }

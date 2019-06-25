@@ -1,6 +1,7 @@
 package render
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/coral/nocube/pkg/settings"
@@ -24,6 +25,7 @@ type Render struct {
 func New(s *settings.Settings) *Render {
 	tt := time.Second / time.Duration(s.Global.Render.InternalTargetFPS)
 	b := NewBroadcaster(1)
+
 	return &Render{
 		startTimer:          time.Now(),
 		timeSinceLastUpdate: time.Now(),
@@ -46,6 +48,18 @@ func (r *Render) onUpdate() {
 		TimeSinceStart:  time.Since(r.startTimer),
 		TimeSinceUpdate: time.Since(r.timeSinceLastUpdate),
 	}
+
+	var m uint64 = 0
+	ticker := time.NewTicker(5 * time.Second)
+	go func() {
+		for _ = range ticker.C {
+			d := u.FrameNumber - m
+			fmt.Println("System FPS: ", d/5)
+			m = u.FrameNumber
+
+		}
+	}()
+
 	for {
 		select {
 		case <-r.ticker.C:

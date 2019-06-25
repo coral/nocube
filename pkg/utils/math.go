@@ -38,3 +38,11 @@ func Threshold(v float64, threshold float64) float64 {
 		return 0
 	}
 }
+
+func Trigger(v float64, trigger bool) float64 {
+	if trigger {
+		return v
+	} else {
+		return 0.0
+	}
+}
