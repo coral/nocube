@@ -1,10 +1,8 @@
 package render
 
 import (
-	"fmt"
 	"time"
 
-	"github.com/coral/nocube/pkg/settings"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -20,10 +18,11 @@ type Render struct {
 	timeSinceLastUpdate time.Time
 	targetTickerTime    time.Duration
 	Update              Broadcaster
+	Benchmark           bool
 }
 
-func New(s *settings.Settings) *Render {
-	tt := time.Second / time.Duration(s.Global.Render.InternalTargetFPS)
+func New(targetFPS int, benchmark bool) *Render {
+	tt := time.Second / time.Duration(targetFPS)
 	b := NewBroadcaster(1)
 
 	return &Render{
@@ -31,6 +30,7 @@ func New(s *settings.Settings) *Render {
 		timeSinceLastUpdate: time.Now(),
 		targetTickerTime:    tt,
 		Update:              b,
+		Benchmark:           benchmark,
 	}
 }
 
@@ -49,16 +49,18 @@ func (r *Render) onUpdate() {
 		TimeSinceUpdate: time.Since(r.timeSinceLastUpdate),
 	}
 
-	var m uint64 = 0
-	ticker := time.NewTicker(5 * time.Second)
-	go func() {
-		for _ = range ticker.C {
-			d := u.FrameNumber - m
-			fmt.Println("System FPS: ", d/5)
-			m = u.FrameNumber
+	if r.Benchmark {
+		var m uint64 = 0
+		ticker := time.NewTicker(5 * time.Second)
+		go func() {
+			for _ = range ticker.C {
+				d := u.FrameNumber - m
+				log.Info("System FPS: ", d/5)
+				m = u.FrameNumber
 
-		}
-	}()
+			}
+		}()
+	}
 
 	for {
 		select {

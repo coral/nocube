@@ -1,6 +1,8 @@
 package pipeline
 
 import (
+	"fmt"
+
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/colorlookups"
 	"github.com/coral/nocube/pkg/data"
@@ -17,16 +19,43 @@ type Pipeline struct {
 	BlendMode string
 }
 
-func New(name string, opacity float64, genName string, colorName string, blendMode string) *Pipeline {
+type PipelineJSON struct {
+	Name            string
+	Opacity         float64
+	GeneratorName   string
+	ColorLookupName string
+	BlendMode       string
+}
+
+func New(name string, genName string, colorName string, blendMode string) (*Pipeline, error) {
+	g := generators.Generators[genName]
+	if g == nil {
+		return nil, fmt.Errorf("Could not find generator " + genName)
+	}
+
+	c := colorlookups.ColorLookups[colorName]
+	if c == nil {
+		return nil, fmt.Errorf("Could not find color loookup " + colorName)
+	}
 
 	return &Pipeline{
 		Name:      name,
-		Opacity:   opacity,
-		Gen:       generators.Generators[genName],
-		Color:     colorlookups.ColorLookups[colorName],
+		Opacity:   0.0,
+		Gen:       g,
+		Color:     c,
 		BlendMode: blendMode,
-	}
+	}, nil
 
+}
+
+func (p *Pipeline) Marshal() PipelineJSON {
+	return PipelineJSON{
+		Name:            p.Name,
+		Opacity:         p.Opacity,
+		GeneratorName:   p.Gen.Name(),
+		ColorLookupName: p.Color.Name(),
+		BlendMode:       p.BlendMode,
+	}
 }
 
 func (p *Pipeline) Process(f *frame.F, m *mapping.Mapping, d *data.Data) []pkg.ColorLookupResult {

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+
 	"github.com/coral/nocube/pkg/api"
 	"github.com/coral/nocube/pkg/audio"
 	"github.com/coral/nocube/pkg/data"
@@ -8,7 +10,6 @@ import (
 	"github.com/coral/nocube/pkg/mapping"
 	"github.com/coral/nocube/pkg/output"
 	"github.com/coral/nocube/pkg/pipelines"
-	"github.com/coral/nocube/pkg/pipelines/pipeline"
 	"github.com/coral/nocube/pkg/render"
 	"github.com/coral/nocube/pkg/settings"
 
@@ -16,6 +17,9 @@ import (
 )
 
 func main() {
+
+	var benchmark = flag.Bool("benchmark", false, "Print system FPS")
+	flag.Parse()
 
 	//Initialize logger
 	log.SetLevel(log.DebugLevel)
@@ -51,30 +55,14 @@ func main() {
 	output := output.New(settings)
 	output.Init()
 
-	rend := render.New(settings)
+	rend := render.New(settings.Global.Render.InternalTargetFPS, *benchmark)
 	rend.Start()
-
-	/* 	t := make(chan render.Update)
-	   	rend.Update.Register(t) */
 
 	frame := frame.New(rend, a)
 	frame.SetBeat(60.0/30.0, 0)
 
-	Pipelines := pipelines.New(&frame, mapping, &db)
-	cp := pipeline.New("olof", 0.0, "strobe", "dummy", "add")
-	Pipelines.Create(cp)
-
-	beatstrobe := pipeline.New("beatstrobe", 0.0, "beatstrobe", "tubechange", "add")
-	Pipelines.Create(beatstrobe)
-
-	test := pipeline.New("denis", 0.2, "zebra", "colorize", "screen")
-	Pipelines.Create(test)
-
-	donnis := pipeline.New("solid", 0.0, "solid", "dummy", "add")
-	Pipelines.Create(donnis)
-
-	// xd := pipeline.New("solid", 0.0, "xd", "dummy", "add")
-	// Pipelines.Create(xd)
+	Pipelines := pipelines.New("demo", &frame, mapping, &db)
+	Pipelines.LoadPipelines()
 
 	go func() {
 

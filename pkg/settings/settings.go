@@ -54,7 +54,7 @@ func New(path string) (*Settings, error) {
 	if err != nil {
 		ns := Settings{}
 		ns.Path = path
-		saveTimer = time.NewTicker(5 * time.Minute)
+		saveTimer = time.NewTicker(20 * time.Minute)
 		go ns.Save()
 		return &ns, nil
 	}
@@ -65,7 +65,7 @@ func New(path string) (*Settings, error) {
 		return nil, err
 	}
 
-	saveTimer = time.NewTicker(5 * time.Minute)
+	saveTimer = time.NewTicker(20 * time.Minute)
 	go ns.Save()
 
 	return &ns, nil
@@ -77,8 +77,6 @@ func (s *Settings) Save() {
 		case <-saveTimer.C:
 			data, err := json.MarshalIndent(s, "", "	")
 			if err != nil {
-				// TODO
-				// Replace with real logging library
 				log.Error("could not save settings")
 				log.Error(err)
 				panic(err)
@@ -86,8 +84,6 @@ func (s *Settings) Save() {
 
 			err = ioutil.WriteFile("../../files/settings/"+s.Path+".json", data, 0644)
 			if err != nil {
-				// TODO
-				//Replace with real logging
 				log.Error(err)
 			}
 
