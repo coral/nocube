@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"time"
 
 	"periph.io/x/periph/devices/apa102"
 
@@ -51,9 +50,9 @@ func main() {
 	hsname, _ := os.Hostname()
 	flag.Parse()
 	log.SetFlags(0)
-	ticker := time.NewTicker(5 * time.Second)
 
 	//Performance Benchmarking
+	//	ticker := time.NewTicker(5 * time.Second)
 	// var m uint64 = 0
 	// go func() {
 	// 	for _ = range ticker.C {
