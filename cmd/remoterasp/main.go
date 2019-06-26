@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"periph.io/x/periph/conn/physic"
 
@@ -19,6 +20,7 @@ import (
 )
 
 var port = flag.Int("port", 12500, "listen port")
+var benchmark = flag.Bool("benchmark", false, "print fps")
 var bridgename = flag.String("bridgename", "first", "name of bridge for discovery")
 
 var dataline1 = apa102.Dev{}
@@ -53,17 +55,19 @@ func main() {
 	flag.Parse()
 	log.SetFlags(0)
 
-	//Performance Benchmarking
-	//	ticker := time.NewTicker(5 * time.Second)
-	// var m uint64 = 0
-	// go func() {
-	// 	for _ = range ticker.C {
-	// 		d := FrameNumber - m
-	// 		fmt.Println("System FPS: ", d/5)
-	// 		m = FrameNumber
+	if *benchmark {
+		//	Performance Benchmarking
+		ticker := time.NewTicker(5 * time.Second)
+		var m uint64 = 0
+		go func() {
+			for _ = range ticker.C {
+				d := FrameNumber - m
+				fmt.Println("System FPS: ", d/5)
+				m = FrameNumber
 
-	// 	}
-	// }()
+			}
+		}()
+	}
 
 	server, err := zeroconf.Register(hsname, "_apabridge._tcp", "local.", *port, []string{"txtv=0", "lo=1", "la=2"}, nil)
 	if err != nil {

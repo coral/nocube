@@ -57,13 +57,13 @@ func main() {
 	frame.SetBeat(60.0/30.0, 0)
 
 	Pipelines := pipelines.New(&frame, mapping)
-	cp := pipeline.New("olof", 1.0, "strobe", "colorize", "add")
-	Pipelines.Add(cp)
+	// cp := pipeline.New("olof", 1.0, "strobe", "colorize", "add")
+	// Pipelines.Add(cp)
 
-	test := pipeline.New("denis", 0.0, "zebra", "dummy", "screen")
-	Pipelines.Add(test)
+	// test := pipeline.New("denis", 0.0, "zebra", "dummy", "screen")
+	// Pipelines.Add(test)
 
-	donnis := pipeline.New("solid", 1.0, "solid", "dummy", "add")
+	donnis := pipeline.New("solid", 0.2, "solid", "dummy", "add")
 	Pipelines.Add(donnis)
 
 	go func() {
