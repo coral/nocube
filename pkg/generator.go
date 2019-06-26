@@ -1,6 +1,9 @@
 package pkg
 
-import "github.com/coral/nocube/pkg/frame"
+import (
+	"github.com/coral/nocube/pkg/data"
+	"github.com/coral/nocube/pkg/frame"
+)
 
 type GeneratorParameters struct {
 	values  map[string]float64
@@ -13,5 +16,5 @@ type GeneratorResult struct {
 }
 
 type Generator interface {
-	Generate(pixels []Pixel, f *frame.F, parameters GeneratorParameters) []GeneratorResult
+	Generate(pixels []Pixel, f *frame.F, n string, d *data.Data) []GeneratorResult
 }

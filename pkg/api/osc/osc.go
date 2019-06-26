@@ -1,6 +1,7 @@
 package osc
 
 import (
+	"github.com/coral/nocube/pkg/data"
 	"github.com/coral/nocube/pkg/pipelines"
 	"github.com/hypebeast/go-osc/osc"
 )
@@ -8,11 +9,13 @@ import (
 type OSC struct {
 	pipelines *pipelines.Pipelines
 	s         *osc.Server
+	d         *data.Data
 }
 
-func New(p *pipelines.Pipelines) OSC {
+func New(p *pipelines.Pipelines, d *data.Data) OSC {
 	return OSC{
 		pipelines: p,
+		d:         d,
 	}
 }
 
@@ -33,6 +36,14 @@ func (o *OSC) Init(addr string) {
 	})
 	o.s.Handle("/1/fader5", func(msg *osc.Message) {
 		o.pipelines.ChangeOpacity("xd", AssertFloat64(msg))
+	})
+
+	o.s.Handle("/1/rotary1", func(msg *osc.Message) {
+		o.d.SetFloat64("denis", "speed", AssertFloat64(msg))
+	})
+
+	o.s.Handle("/1/rotary2", func(msg *osc.Message) {
+		o.d.SetInt64("olof", "segment", int64(AssertFloat64(msg)))
 	})
 
 	o.s.ListenAndServe()

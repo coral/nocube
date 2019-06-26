@@ -2,6 +2,7 @@ package strobe
 
 import (
 	"github.com/coral/nocube/pkg"
+	"github.com/coral/nocube/pkg/data"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/utils"
 )
@@ -11,8 +12,10 @@ type Strobe struct {
 
 var _ pkg.Generator = &Strobe{}
 
-func (g *Strobe) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.GeneratorParameters) (result []pkg.GeneratorResult) {
-	_, r := f.GetSegment(6)
+func (g *Strobe) Generate(pixels []pkg.Pixel, f *frame.F, n string, d *data.Data) (result []pkg.GeneratorResult) {
+
+	segment := d.GetInt64(n, "segment")
+	_, r := f.GetSegment(segment)
 	for _, pixel := range pixels {
 		if !pixel.Active {
 			result = append(result, pkg.GeneratorResult{

@@ -3,6 +3,7 @@ package pipeline
 import (
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/colorlookups"
+	"github.com/coral/nocube/pkg/data"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/generators"
 	"github.com/coral/nocube/pkg/mapping"
@@ -28,8 +29,8 @@ func New(name string, opacity float64, genName string, colorName string, blendMo
 
 }
 
-func (p *Pipeline) Process(f *frame.F, m *mapping.Mapping) []pkg.ColorLookupResult {
-	g := p.Gen.Generate(m.Coordinates, f, pkg.GeneratorParameters{})
+func (p *Pipeline) Process(f *frame.F, m *mapping.Mapping, d *data.Data) []pkg.ColorLookupResult {
+	g := p.Gen.Generate(m.Coordinates, f, p.Name, d)
 	c := p.Color.Lookup(g, f, pkg.ColorLookupParameters{})
 	for i, d := range c {
 		c[i].Color = *d.Color.Scale(p.Opacity)

@@ -106,8 +106,8 @@ func (f *F) GetSquare() float64 {
 	}
 }
 
-func (f *F) GetSegment(numSegments uint64) (segmentIndex uint64, remainder float64) {
-	segmentIndex = uint64(math.Floor(float64(numSegments) * f.Phase))
+func (f *F) GetSegment(numSegments int64) (segmentIndex int64, remainder float64) {
+	segmentIndex = int64(math.Floor(float64(numSegments) * f.Phase))
 	remainder = math.Mod(float64(numSegments)*f.Phase, 1)
 
 	return

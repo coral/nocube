@@ -3,6 +3,8 @@ package api
 import (
 	"time"
 
+	"github.com/coral/nocube/pkg/data"
+
 	"github.com/coral/nocube/pkg/api/osc"
 	"github.com/coral/nocube/pkg/pipelines"
 
@@ -24,18 +26,20 @@ type API struct {
 
 	mapping   *mapping.Mapping
 	pipelines *pipelines.Pipelines
+	data      *data.Data
 }
 
-func New(m *mapping.Mapping, p *pipelines.Pipelines) API {
+func New(m *mapping.Mapping, p *pipelines.Pipelines, d *data.Data) API {
 	return API{
 		mapping:   m,
 		pipelines: p,
+		data:      d,
 	}
 }
 
 func (a *API) Init(s *settings.Settings) {
 
-	o := osc.New(a.pipelines)
+	o := osc.New(a.pipelines, a.data)
 	o.Init(s.Global.Control.OSC.Listen)
 	//gin.SetMode(gin.ReleaseMode)
 	a.r = gin.New()

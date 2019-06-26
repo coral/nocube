@@ -2,6 +2,7 @@ package pipelines
 
 import (
 	"github.com/coral/nocube/pkg"
+	"github.com/coral/nocube/pkg/data"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/mapping"
 	"github.com/coral/nocube/pkg/pipelines/blending"
@@ -12,12 +13,14 @@ type Pipelines struct {
 	Active  []*pipeline.Pipeline
 	frame   *frame.F
 	mapping *mapping.Mapping
+	d       *data.Data
 }
 
-func New(f *frame.F, m *mapping.Mapping) *Pipelines {
+func New(f *frame.F, m *mapping.Mapping, d *data.Data) *Pipelines {
 	return &Pipelines{
 		frame:   f,
 		mapping: m,
+		d:       d,
 	}
 }
 
@@ -27,7 +30,7 @@ func (p *Pipelines) Process(f *frame.F) []pkg.ColorLookupResult {
 		outputBuffer[i] = pkg.ColorLookupResult{}
 	}
 	for _, pipeline := range p.Active {
-		data := pipeline.Process(f, p.mapping)
+		data := pipeline.Process(f, p.mapping, p.d)
 		outputBuffer = blending.BlendModes[pipeline.BlendMode](outputBuffer, data, 0.0)
 
 	}

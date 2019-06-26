@@ -60,7 +60,7 @@ func main() {
 	frame := frame.New(rend, a)
 	frame.SetBeat(60.0/30.0, 0)
 
-	Pipelines := pipelines.New(&frame, mapping)
+	Pipelines := pipelines.New(&frame, mapping, &db)
 	cp := pipeline.New("olof", 0.0, "strobe", "dummy", "add")
 	Pipelines.Create(cp)
 
@@ -88,7 +88,7 @@ func main() {
 
 	}()
 
-	api := api.New(mapping, Pipelines)
+	api := api.New(mapping, Pipelines, &db)
 	api.Init(settings)
 
 }
