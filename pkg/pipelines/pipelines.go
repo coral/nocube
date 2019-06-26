@@ -34,6 +34,26 @@ func (p *Pipelines) Process(f *frame.F) []pkg.ColorLookupResult {
 	return outputBuffer
 }
 
-func (p *Pipelines) Add(newPipeline *pipeline.Pipeline) {
+func (p *Pipelines) Create(newPipeline *pipeline.Pipeline) {
 	p.Active = append(p.Active, newPipeline)
+}
+
+func (p *Pipelines) GetActive() []*pipeline.Pipeline {
+	return p.Active
+}
+
+func (p *Pipelines) Destroy(name string) {
+	for i, e := range p.Active {
+		if e.Name == name {
+			p.Active = append(p.Active[:i], p.Active[i+1:]...)
+		}
+	}
+}
+
+func (p *Pipelines) ChangeOpacity(name string, opacity float64) {
+	for _, e := range p.Active {
+		if e.Name == name {
+			e.ChangeOpacity(opacity)
+		}
+	}
 }

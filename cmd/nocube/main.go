@@ -1,8 +1,9 @@
 package main
 
 import (
+	"github.com/coral/nocube/pkg/api"
 	"github.com/coral/nocube/pkg/audio"
-	"github.com/coral/nocube/pkg/control/web"
+	"github.com/coral/nocube/pkg/data"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/mapping"
 	"github.com/coral/nocube/pkg/output"
@@ -25,6 +26,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	db := data.New()
+	db.Init()
 
 	log.WithFields(log.Fields{
 		"Settings": settings.Path + ".json",
@@ -57,14 +61,20 @@ func main() {
 	frame.SetBeat(60.0/30.0, 0)
 
 	Pipelines := pipelines.New(&frame, mapping)
-	// cp := pipeline.New("olof", 1.0, "strobe", "colorize", "add")
-	// Pipelines.Add(cp)
+	cp := pipeline.New("olof", 0.0, "strobe", "dummy", "add")
+	Pipelines.Create(cp)
 
-	// test := pipeline.New("denis", 0.0, "zebra", "dummy", "screen")
-	// Pipelines.Add(test)
+	beatstrobe := pipeline.New("beatstrobe", 0.0, "beatstrobe", "tubechange", "add")
+	Pipelines.Create(beatstrobe)
 
-	donnis := pipeline.New("solid", 0.2, "solid", "dummy", "add")
-	Pipelines.Add(donnis)
+	test := pipeline.New("denis", 0.2, "zebra", "colorize", "screen")
+	Pipelines.Create(test)
+
+	donnis := pipeline.New("solid", 0.0, "solid", "dummy", "add")
+	Pipelines.Create(donnis)
+
+	// xd := pipeline.New("solid", 0.0, "xd", "dummy", "add")
+	// Pipelines.Create(xd)
 
 	go func() {
 
@@ -78,7 +88,7 @@ func main() {
 
 	}()
 
-	server := web.Server{}
-	server.Init(settings, mapping)
+	api := api.New(mapping, Pipelines)
+	api.Init(settings)
 
 }

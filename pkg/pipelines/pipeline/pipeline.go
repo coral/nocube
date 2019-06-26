@@ -36,3 +36,7 @@ func (p *Pipeline) Process(f *frame.F, m *mapping.Mapping) []pkg.ColorLookupResu
 	}
 	return c
 }
+
+func (p *Pipeline) ChangeOpacity(newOpacity float64) {
+	p.Opacity = newOpacity
+}

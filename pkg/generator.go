@@ -3,12 +3,13 @@ package pkg
 import "github.com/coral/nocube/pkg/frame"
 
 type GeneratorParameters struct {
-	Speed float64
+	values  map[string]float64
+	toggles map[string]bool
 }
 
 type GeneratorResult struct {
 	Intensity float64
-	Phase float64
+	Phase     float64
 }
 
 type Generator interface {

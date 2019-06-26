@@ -21,6 +21,9 @@ type Settings struct {
 			Web struct {
 				Listen string
 			}
+			OSC struct {
+				Listen string
+			}
 		}
 		Render struct {
 			InternalTargetFPS int

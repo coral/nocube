@@ -1,4 +1,4 @@
-package strobe
+package beatstrobe
 
 import (
 	"github.com/coral/nocube/pkg"
@@ -6,13 +6,14 @@ import (
 	"github.com/coral/nocube/pkg/utils"
 )
 
-type Strobe struct {
+type BeatStrobe struct {
 }
 
-var _ pkg.Generator = &Strobe{}
+var _ pkg.Generator = &BeatStrobe{}
 
-func (g *Strobe) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.GeneratorParameters) (result []pkg.GeneratorResult) {
+func (g *BeatStrobe) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.GeneratorParameters) (result []pkg.GeneratorResult) {
 	_, r := f.GetSegment(6)
+	isbeat := f.GetBeat(4, 0)
 	for _, pixel := range pixels {
 		if !pixel.Active {
 			result = append(result, pkg.GeneratorResult{
@@ -20,7 +21,7 @@ func (g *Strobe) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.Generat
 			})
 		} else {
 			result = append(result, pkg.GeneratorResult{
-				Intensity: utils.Threshold(r, 0.92),
+				Intensity: utils.Trigger(utils.Threshold(r, 0.92), isbeat),
 			})
 
 		}
@@ -29,6 +30,6 @@ func (g *Strobe) Generate(pixels []pkg.Pixel, f *frame.F, parameters pkg.Generat
 	return
 }
 
-func (g *Strobe) Settings() {
+func (g *BeatStrobe) Settings() {
 
 }

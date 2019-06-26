@@ -1,0 +1,44 @@
+package api
+
+import "github.com/gin-gonic/gin"
+
+///////////////////////////////////////////////////////////
+//// GET
+///////////////////////////////////////////////////////////
+
+func (a *API) GetPipelines(c *gin.Context) {
+
+	d := a.pipelines.GetActive()
+
+	c.JSON(200, d)
+}
+
+///////////////////////////////////////////////////////////
+//// Insert
+///////////////////////////////////////////////////////////
+
+func (a *API) CreatePipeline(c *gin.Context) {
+
+	d := a.pipelines.GetActive()
+
+	c.JSON(200, d)
+}
+
+///////////////////////////////////////////////////////////
+//// Update
+///////////////////////////////////////////////////////////
+
+func (a *API) ChangePipelineOpacity(c *gin.Context) {
+	type NewOpacity struct {
+		Opacity float64 `json:"id" binding:"required"`
+	}
+	d := NewOpacity{}
+
+	if err := c.ShouldBindJSON(&d); err == nil {
+
+	}
+
+	//d := a.pipelines.GetActive()
+
+	c.JSON(200, d)
+}
