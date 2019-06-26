@@ -32,3 +32,7 @@ func (g *Passthrough) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F,
 
 	return
 }
+
+func (g *Passthrough) Name() string {
+	return "passthrough"
+}

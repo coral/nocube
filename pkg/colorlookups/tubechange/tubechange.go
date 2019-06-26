@@ -37,3 +37,7 @@ func (g *Tubechange) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, 
 
 	return
 }
+
+func (g *Tubechange) Name() string {
+	return "tubechange"
+}

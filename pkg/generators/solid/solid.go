@@ -2,7 +2,6 @@ package solid
 
 import (
 	"github.com/coral/nocube/pkg"
-	"github.com/coral/nocube/pkg/data"
 	"github.com/coral/nocube/pkg/frame"
 )
 
@@ -11,7 +10,7 @@ type Solid struct {
 
 var _ pkg.Generator = &Solid{}
 
-func (g *Solid) Generate(pixels []pkg.Pixel, f *frame.F, n string, d *data.Data) (result []pkg.GeneratorResult) {
+func (g *Solid) Generate(pixels []pkg.Pixel, f *frame.F, p pkg.GeneratorParameters) (result []pkg.GeneratorResult) {
 	for _, pixel := range pixels {
 		if !pixel.Active {
 			result = append(result, pkg.GeneratorResult{
@@ -30,4 +29,8 @@ func (g *Solid) Generate(pixels []pkg.Pixel, f *frame.F, n string, d *data.Data)
 
 func (g *Solid) Settings() {
 
+}
+
+func (g *Solid) Name() string {
+	return "solid"
 }

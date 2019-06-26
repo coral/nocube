@@ -2,7 +2,6 @@ package settings
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"time"
 
@@ -80,8 +79,8 @@ func (s *Settings) Save() {
 			if err != nil {
 				// TODO
 				// Replace with real logging library
-				fmt.Println("COULD NOT SAVE")
-				fmt.Println(err)
+				log.Error("could not save settings")
+				log.Error(err)
 				panic(err)
 			}
 
@@ -89,7 +88,7 @@ func (s *Settings) Save() {
 			if err != nil {
 				// TODO
 				//Replace with real logging
-				fmt.Println(err)
+				log.Error(err)
 			}
 
 			log.Info("Saved settings to " + s.Path + ".json")

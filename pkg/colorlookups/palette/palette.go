@@ -49,3 +49,7 @@ func (g *Palette) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, par
 
 	return
 }
+
+func (g *Palette) Name() string {
+	return "palette"
+}

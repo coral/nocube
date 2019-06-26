@@ -2,7 +2,6 @@ package xd
 
 import (
 	"github.com/coral/nocube/pkg"
-	"github.com/coral/nocube/pkg/data"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/stojg/vector"
 )
@@ -12,7 +11,7 @@ type Xd struct {
 
 var _ pkg.Generator = &Xd{}
 
-func (g *Xd) Generate(pixels []pkg.Pixel, f *frame.F, n string, d *data.Data) (result []pkg.GeneratorResult) {
+func (g *Xd) Generate(pixels []pkg.Pixel, f *frame.F, p pkg.GeneratorParameters) (result []pkg.GeneratorResult) {
 	// quat := vector.QuaternionToTarget(&vector.Vector3{0, 1, 0}, &vector.Vector3{1, 1, 1})
 
 	segment, remainder := f.GetSegment(4)
@@ -58,4 +57,8 @@ func (g *Xd) Generate(pixels []pkg.Pixel, f *frame.F, n string, d *data.Data) (r
 	}
 
 	return
+}
+
+func (g *Xd) Name() string {
+	return "xd"
 }

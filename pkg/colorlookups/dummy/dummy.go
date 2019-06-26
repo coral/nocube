@@ -31,3 +31,7 @@ func (g *Dummy) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, param
 
 	return
 }
+
+func (g *Dummy) Name() string {
+	return "dummy"
+}

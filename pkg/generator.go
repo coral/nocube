@@ -6,8 +6,8 @@ import (
 )
 
 type GeneratorParameters struct {
-	values  map[string]float64
-	toggles map[string]bool
+	Data *data.Data
+	Name string
 }
 
 type GeneratorResult struct {
@@ -16,5 +16,6 @@ type GeneratorResult struct {
 }
 
 type Generator interface {
-	Generate(pixels []Pixel, f *frame.F, n string, d *data.Data) []GeneratorResult
+	Generate(pixels []Pixel, f *frame.F, p GeneratorParameters) []GeneratorResult
+	Name() string
 }

@@ -30,8 +30,14 @@ func New(name string, opacity float64, genName string, colorName string, blendMo
 }
 
 func (p *Pipeline) Process(f *frame.F, m *mapping.Mapping, d *data.Data) []pkg.ColorLookupResult {
-	g := p.Gen.Generate(m.Coordinates, f, p.Name, d)
-	c := p.Color.Lookup(g, f, pkg.ColorLookupParameters{})
+	g := p.Gen.Generate(m.Coordinates, f, pkg.GeneratorParameters{
+		Data: d,
+		Name: p.Name,
+	})
+	c := p.Color.Lookup(g, f, pkg.ColorLookupParameters{
+		Data: d,
+		Name: p.Name,
+	})
 	for i, d := range c {
 		c[i].Color = *d.Color.Scale(p.Opacity)
 	}

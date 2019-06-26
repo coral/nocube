@@ -1,12 +1,14 @@
 package pkg
 
 import (
+	"github.com/coral/nocube/pkg/data"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/stojg/vector"
 )
 
 type ColorLookupParameters struct {
-	Speed float64
+	Data *data.Data
+	Name string
 }
 
 type ColorLookupResult struct {
@@ -15,4 +17,5 @@ type ColorLookupResult struct {
 
 type ColorLookup interface {
 	Lookup(generatorResults []GeneratorResult, f *frame.F, parameters ColorLookupParameters) []ColorLookupResult
+	Name() string
 }

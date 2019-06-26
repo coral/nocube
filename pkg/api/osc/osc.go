@@ -28,6 +28,9 @@ func (o *OSC) Init(addr string) {
 	o.s.Handle("/1/fader2", func(msg *osc.Message) {
 		o.pipelines.ChangeOpacity("olof", AssertFloat64(msg))
 	})
+	o.s.Handle("/1/push2", func(msg *osc.Message) {
+		o.pipelines.ChangeOpacity("olof", AssertFloat64(msg))
+	})
 	o.s.Handle("/1/fader3", func(msg *osc.Message) {
 		o.pipelines.ChangeOpacity("solid", AssertFloat64(msg))
 	})
@@ -39,11 +42,15 @@ func (o *OSC) Init(addr string) {
 	})
 
 	o.s.Handle("/1/rotary1", func(msg *osc.Message) {
-		o.d.SetFloat64("denis", "speed", AssertFloat64(msg))
+		o.d.SetScopedFloat64("denis", "zebra", "speed", AssertFloat64(msg))
 	})
 
 	o.s.Handle("/1/rotary2", func(msg *osc.Message) {
-		o.d.SetInt64("olof", "segment", int64(AssertFloat64(msg)))
+		o.d.SetScopedFloat64("denis", "colorize", "hue", AssertFloat64(msg))
+	})
+
+	o.s.Handle("/1/rotary3", func(msg *osc.Message) {
+		o.d.SetScopedInt64("olof", "strobe", "segment", int64(AssertFloat64(msg)))
 	})
 
 	o.s.ListenAndServe()

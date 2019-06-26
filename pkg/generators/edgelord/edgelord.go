@@ -2,7 +2,6 @@ package edgelord
 
 import (
 	"github.com/coral/nocube/pkg"
-	"github.com/coral/nocube/pkg/data"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/utils"
 	"github.com/stojg/vector"
@@ -13,7 +12,7 @@ type Edgelord struct {
 
 var _ pkg.Generator = &Edgelord{}
 
-func (g *Edgelord) Generate(pixels []pkg.Pixel, f *frame.F, n string, d *data.Data) (result []pkg.GeneratorResult) {
+func (g *Edgelord) Generate(pixels []pkg.Pixel, f *frame.F, p pkg.GeneratorParameters) (result []pkg.GeneratorResult) {
 	// quat := vector.QuaternionToTarget(&vector.Vector3{0, 1, 0}, &vector.Vector3{1, 1, 1})
 
 	circle := vector.NewVector3(f.GetSine(0), 0, f.GetCos(0))
@@ -53,4 +52,8 @@ func (g *Edgelord) Generate(pixels []pkg.Pixel, f *frame.F, n string, d *data.Da
 	}
 
 	return
+}
+
+func (g *Edgelord) Name() string {
+	return "edgelord"
 }

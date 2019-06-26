@@ -30,15 +30,15 @@ func (d *Data) Init() {
 
 ////FLOAT64
 
-func (d *Data) SetFloat64(name string, key string, value float64) {
-	err := d.db.Set(name+"_"+key, value, 0).Err()
+func (d *Data) SetScopedFloat64(pipeline string, effect string, key string, value float64) {
+	err := d.db.Set(pipeline+"_"+effect+"_"+key, value, 0).Err()
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (d *Data) GetFloat64(name string, key string) float64 {
-	val, err := d.db.Get(name + "_" + key).Result()
+func (d *Data) GetScopedFloat64(pipeline string, effect string, key string) float64 {
+	val, err := d.db.Get(pipeline + "_" + effect + "_" + key).Result()
 	if err != nil {
 		return 0.0
 	}
@@ -48,15 +48,15 @@ func (d *Data) GetFloat64(name string, key string) float64 {
 }
 
 //Int64
-func (d *Data) SetInt64(name string, key string, value int64) {
-	err := d.db.Set(name+"_"+key, value, 0).Err()
+func (d *Data) SetScopedInt64(pipeline string, effect string, key string, value int64) {
+	err := d.db.Set(pipeline+"_"+effect+"_"+key, value, 0).Err()
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (d *Data) GetInt64(name string, key string) int64 {
-	val, err := d.db.Get(name + "_" + key).Result()
+func (d *Data) GetScopedInt64(pipeline string, effect string, key string) int64 {
+	val, err := d.db.Get(pipeline + "_" + effect + "_" + key).Result()
 	if err != nil {
 		return 0
 	}

@@ -27,3 +27,7 @@ func (g *AllWhite) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, pa
 
 	return
 }
+
+func (g *AllWhite) Name() string {
+	return "allwhite"
+}

@@ -59,3 +59,7 @@ func (g *FFT) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, paramet
 
 	return
 }
+
+func (g *FFT) Name() string {
+	return "fft"
+}
