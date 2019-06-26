@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"periph.io/x/periph/conn/physic"
+	"periph.io/x/periph/conn/spi"
 
 	"periph.io/x/periph/devices/apa102"
 
@@ -89,11 +90,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
+	defer s1.Close()
 	dd := physic.MegaHertz
 	dd.Set(strconv.FormatInt(*mhz, 10) + "MHz")
 
-	s1.LimitSpeed(dd)
+	if err := s1.LimitSpeed(dd); err != nil {
+		fmt.Println(err)
+	}
+
+	if p, ok := s1.(spi.Pins); ok {
+		log.Printf("Using pins CLK: %s  MOSI: %s  MISO: %s", p.CLK(), p.MOSI(), p.MISO())
+	}
 
 	opts := apa102.PassThruOpts
 	opts.NumPixels = 432
