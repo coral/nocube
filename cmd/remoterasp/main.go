@@ -21,6 +21,7 @@ import (
 
 var port = flag.Int("port", 12500, "listen port")
 var benchmark = flag.Bool("benchmark", false, "print fps")
+var mhz = flag.Int64("megaherz", 6, "what mhz to clock SPI at")
 var bridgename = flag.String("bridgename", "first", "name of bridge for discovery")
 
 var dataline1 = apa102.Dev{}
@@ -89,7 +90,10 @@ func main() {
 		panic(err)
 	}
 
-	s1.LimitSpeed(6 * physic.MegaHertz)
+	dd := physic.MegaHertz
+	dd.Set(strconv.FormatInt(*mhz, 10) + "MHz")
+
+	s1.LimitSpeed(dd)
 
 	opts := apa102.PassThruOpts
 	opts.NumPixels = 432
