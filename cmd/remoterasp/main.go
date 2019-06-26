@@ -85,7 +85,7 @@ func main() {
 		panic(err)
 	}
 
-	s1.LimitSpeed(8 * physic.MegaHertz)
+	s1.LimitSpeed(6 * physic.MegaHertz)
 
 	opts := apa102.PassThruOpts
 	opts.NumPixels = 432

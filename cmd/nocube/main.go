@@ -63,6 +63,9 @@ func main() {
 	test := pipeline.New("denis", 0.0, "zebra", "dummy", "screen")
 	Pipelines.Add(test)
 
+	donnis := pipeline.New("solid", 1.0, "solid", "dummy", "add")
+	Pipelines.Add(donnis)
+
 	go func() {
 
 		for {
