@@ -8,6 +8,8 @@ import (
 	"os"
 	"strconv"
 
+	"periph.io/x/periph/conn/physic"
+
 	"periph.io/x/periph/devices/apa102"
 
 	"github.com/gorilla/websocket"
@@ -82,6 +84,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	s1.LimitSpeed(8 * physic.MegaHertz)
 
 	opts := apa102.PassThruOpts
 	opts.NumPixels = 432
