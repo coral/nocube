@@ -40,7 +40,7 @@ func New(m *mapping.Mapping, p *pipelines.Pipelines, d *data.Data) API {
 func (a *API) Init(s *settings.Settings) {
 
 	o := osc.New(a.pipelines, a.data)
-	o.Init(s.Global.Control.OSC.Listen)
+	go o.Init(s.Global.Control.OSC.Listen)
 	//gin.SetMode(gin.ReleaseMode)
 	a.r = gin.New()
 	a.r.Use(cors.Default())
@@ -87,5 +87,25 @@ func (a *API) Init(s *settings.Settings) {
 		c.JSON(200, a.mapping.Coordinates)
 	})
 
-	a.r.Run(s.Global.Control.Web.Listen)
+	type OPCMAP struct {
+		Point []float32 `json:"point"`
+	}
+
+	a.r.GET("/opcmapping", func(c *gin.Context) {
+		ratio := 2.5
+		var m []OPCMAP
+		for _, e := range a.mapping.Coordinates {
+			d := OPCMAP{
+				Point: []float32{
+					float32(e.Coordinate[0] * ratio),
+					float32(e.Coordinate[1] * ratio),
+					float32(e.Coordinate[2] * ratio),
+				},
+			}
+			m = append(m, d)
+		}
+		c.JSON(200, m)
+	})
+
+	a.r.Run("0.0.0.0:8000")
 }

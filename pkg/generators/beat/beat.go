@@ -8,6 +8,9 @@ import (
 type Beat struct {
 }
 
+type Settings struct {
+}
+
 var _ pkg.Generator = &Beat{}
 
 func (g *Beat) Generate(pixels []pkg.Pixel, f *frame.F, p pkg.GeneratorParameters) (result []pkg.GeneratorResult) {
@@ -29,4 +32,8 @@ func (g *Beat) Generate(pixels []pkg.Pixel, f *frame.F, p pkg.GeneratorParameter
 
 func (g *Beat) Name() string {
 	return "beat"
+}
+
+func (g *Beat) Settings() Settings {
+	return Settings{}
 }

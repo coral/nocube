@@ -1,42 +1,39 @@
 {
-	"Path": "start",
-	"Global": {
-		"Mapping": {
-			"Path": "v5"
-		},
-		"Control": {
-			"Web": {
-				"Listen": "0.0.0.0:8000"
-			},
-			"OSC": {
-				"Listen": "0.0.0.0:8765"
-			}
-		},
-		"Render": {
-			"InternalTargetFPS": 170
-		},
-		"Audio": {
-			"SampleRate": 48000,
-			"Channels": 1,
-			"BufSize": 256,
-			"BlockSize": 256,
-			"Beat": {
-				"Silence": -70,
-				"Threshold": 0.3
-			},
-			"FFTSize": 1024
-		},
-		"Output": {
-			"ActivatedOutputs": [
-				"RAPA102",
-				"WS"
-			],
-			"RAPA102": [
-				{
-					"Identifier": "korv",
-					"TargetFPS": 170
-				}
-			]
-		}
-	}
+  "Path": "start",
+  "Global": {
+    "Mapping": {
+      "Path": "v5"
+    },
+    "Control": {
+      "Web": {
+        "Listen": "0.0.0.0:8000"
+      },
+      "OSC": {
+        "Listen": "0.0.0.0:8765"
+      }
+    },
+    "Render": {
+      "InternalTargetFPS": 170
+    },
+    "Audio": {
+      "SampleRate": 48000,
+      "Channels": 1,
+      "BufSize": 256,
+      "BlockSize": 256,
+      "Beat": {
+        "Silence": -70,
+        "Threshold": 0.3
+      },
+      "FFTSize": 1024
+    },
+    "Output": {
+      "ActivatedOutputs": ["RAPA102", "WS", "OPC"],
+      "RAPA102": [
+        {
+          "Identifier": "korv",
+          "TargetFPS": 170
+        }
+      ]
+    }
+  }
 }
