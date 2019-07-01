@@ -7,7 +7,6 @@ import (
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/color"
 	"github.com/coral/nocube/pkg/frame"
-	"github.com/coral/nocube/pkg/utils"
 	"github.com/stojg/vector"
 )
 
@@ -31,12 +30,13 @@ func init() {
 }
 
 func (g *Palette) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, parameters pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
-	for _, pixel := range generatorResults {
-		p := math.Floor(utils.Clamp01(math.Abs(pixel.Phase)) * float64(x))
-		rr, gg, bb, _ := palette.At(int(p), 0).RGBA()
-		r := float64(rr) / 255
-		g := float64(gg) / 255
-		b := float64(bb) / 255
+
+	for _, _ = range generatorResults {
+		//p := math.Floor(utils.Clamp01(math.Abs(pixel.Phase)) * float64(x))
+		rr, gg, bb, _ := palette.At(int(math.Ceil(f.Phase*900)), 0).RGBA()
+		r := (float64(rr) / 256) / 255
+		g := (float64(gg) / 256) / 255
+		b := (float64(bb) / 256) / 255
 		// clampedValue := clamp01(pixel.Value)
 		results = append(results, pkg.ColorLookupResult{
 			Color: vector.Vector3{
@@ -45,6 +45,7 @@ func (g *Palette) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, par
 				b,
 			},
 		})
+
 	}
 
 	return

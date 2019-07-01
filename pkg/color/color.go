@@ -20,3 +20,7 @@ func LoadPaletteFromImage(p string) (image.Image, error) {
 
 	return loadedImage, nil
 }
+
+func ResolveColor(value float64, valuerange float64) {
+
+}

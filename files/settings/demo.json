@@ -15,21 +15,21 @@
   },
   {
     "Name": "denis",
-    "Opacity": 0.72,
+    "Opacity": 0,
     "GeneratorName": "zebra",
     "ColorLookupName": "colorize",
     "BlendMode": "screen"
   },
   {
     "Name": "solid",
-    "Opacity": 0.011216875165700912,
+    "Opacity": 1.0,
     "GeneratorName": "solid",
-    "ColorLookupName": "dummy",
+    "ColorLookupName": "palette",
     "BlendMode": "add"
   },
   {
     "Name": "fftdemo",
-    "Opacity": 1,
+    "Opacity": 0.0,
     "GeneratorName": "sense",
     "ColorLookupName": "dummy",
     "BlendMode": "add"
