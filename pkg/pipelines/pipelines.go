@@ -38,9 +38,10 @@ func (p *Pipelines) Process(f *frame.F) []pkg.ColorLookupResult {
 		outputBuffer[i] = pkg.ColorLookupResult{}
 	}
 	for _, pipeline := range p.Active {
-		data := pipeline.Process(f, p.mapping, p.d)
-		outputBuffer = blending.BlendModes[pipeline.BlendMode](outputBuffer, data, 0.0)
-
+		if pipeline.Opacity > 0.0 {
+			data := pipeline.Process(f, p.mapping, p.d)
+			outputBuffer = blending.BlendModes[pipeline.BlendMode](outputBuffer, data, 0.0)
+		}
 	}
 	return outputBuffer
 }
