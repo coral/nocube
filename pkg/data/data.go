@@ -7,11 +7,16 @@ import (
 )
 
 type Data struct {
-	db *redis.Client
+	db         *redis.Client
+	floatcache map[string]float64
+	intcache   map[string]int64
 }
 
 func New() Data {
-	return Data{}
+	return Data{
+		floatcache: make(map[string]float64),
+		intcache:   make(map[string]int64),
+	}
 }
 
 func (d *Data) Init() {
@@ -35,14 +40,19 @@ func (d *Data) SetScopedFloat64(pipeline string, effect string, key string, valu
 	if err != nil {
 		panic(err)
 	}
+	d.floatcache[pipeline+"_"+effect+"_"+key] = value
 }
 
 func (d *Data) GetScopedFloat64(pipeline string, effect string, key string) float64 {
+	if d, m := d.floatcache[pipeline+"_"+effect+"_"+key]; m {
+		return d
+	}
 	val, err := d.db.Get(pipeline + "_" + effect + "_" + key).Result()
 	if err != nil {
 		return 0.0
 	}
 	f, _ := strconv.ParseFloat(val, 64)
+	d.floatcache[pipeline+"_"+effect+"_"+key] = f
 	return f
 
 }
@@ -53,14 +63,19 @@ func (d *Data) SetScopedInt64(pipeline string, effect string, key string, value 
 	if err != nil {
 		panic(err)
 	}
+	d.intcache[pipeline+"_"+effect+"_"+key] = value
 }
 
 func (d *Data) GetScopedInt64(pipeline string, effect string, key string) int64 {
+	if d, m := d.intcache[pipeline+"_"+effect+"_"+key]; m {
+		return d
+	}
 	val, err := d.db.Get(pipeline + "_" + effect + "_" + key).Result()
 	if err != nil {
 		return 0
 	}
 	f, _ := strconv.ParseInt(val, 10, 64)
+	d.intcache[pipeline+"_"+effect+"_"+key] = f
 	return f
 
 }

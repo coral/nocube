@@ -20,6 +20,7 @@ func (g *FFT) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, paramet
 	numFFT := len(f.FFT)
 	steps := float64(numFFT) / float64(numPix)
 
+
 	for a, pixel := range generatorResults {
 		index := int(math.Round(float64(a) * steps))
 		mi := 0.0
