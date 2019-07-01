@@ -22,7 +22,7 @@
 	},
 	{
 		"Name": "solid",
-		"Opacity": 0,
+		"Opacity": 0.011216875165700912,
 		"GeneratorName": "solid",
 		"ColorLookupName": "dummy",
 		"BlendMode": "add"

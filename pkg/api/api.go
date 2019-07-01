@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/coral/nocube/pkg/data"
@@ -40,7 +41,12 @@ func New(m *mapping.Mapping, p *pipelines.Pipelines, d *data.Data) API {
 func (a *API) Init(s *settings.Settings) {
 
 	o := osc.New(a.pipelines, a.data)
-	go o.Init(s.Global.Control.OSC.Listen)
+	go func() {
+		err := o.Init(s.Global.Control.OSC.Listen)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}()
 	//gin.SetMode(gin.ReleaseMode)
 	a.r = gin.New()
 	a.r.Use(cors.Default())

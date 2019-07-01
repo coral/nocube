@@ -2,7 +2,6 @@ package rapa102
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/coral/nocube/pkg"
@@ -31,7 +30,6 @@ func (rm *RMan) Init() {
 	entries := make(chan *zeroconf.ServiceEntry)
 	go func(results <-chan *zeroconf.ServiceEntry) {
 		for entry := range results {
-			fmt.Println(entry)
 			log.WithFields(log.Fields{
 				"Name": entry.ServiceRecord.Instance,
 				"IP":   entry.AddrIPv4[0],

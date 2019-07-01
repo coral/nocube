@@ -1,0 +1,48 @@
+[
+  { "p": "/1/fader1", "t": "f", "d": "solid", "f": "opacity" },
+  {
+    "p": "/1/fader2",
+    "t": "f",
+    "d": "olof",
+    "f": "opacity"
+  },
+  {
+    "p": "/1/fader3",
+    "t": "f",
+    "d": "solid",
+    "f": "opacity"
+  },
+  {
+    "p": "/1/fader4",
+    "t": "f",
+    "d": "beatstrobe",
+    "f": "opacity"
+  },
+  {
+    "p": "/1/fader5",
+    "t": "f",
+    "d": "xd",
+    "f": "opacity"
+  },
+  {
+    "p": "/1/rotary1",
+    "t": "f",
+    "d": "solid",
+    "f": "zebra",
+    "e": "speed"
+  },
+  {
+    "p": "/1/rotary2",
+    "t": "f",
+    "d": "denis",
+    "f": "colorize",
+    "e": "hue"
+  },
+  {
+    "p": "/1/rotary3",
+    "t": "f",
+    "d": "olof",
+    "f": "strobe",
+    "e": "segment"
+  }
+]
