@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/coral/nocube/pkg/api"
 	"github.com/coral/nocube/pkg/audio"
@@ -63,6 +64,10 @@ func main() {
 
 	Pipelines := pipelines.New("demo", &frame, mapping, &db)
 	Pipelines.LoadPipelines()
+
+	for _, de := range Pipelines.GetActive() {
+		fmt.Println(de.Name)
+	}
 
 	go func() {
 
