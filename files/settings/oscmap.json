@@ -1,55 +1,96 @@
 [
   { "p": "/1/fader1", "t": "f", "d": "solid", "f": "opacity" },
   {
-    "p": "/1/fader2",
-    "t": "f",
-    "d": "olof",
-    "f": "opacity"
-  },
-  {
-    "p": "/1/fader3",
-    "t": "f",
-    "d": "denis",
-    "f": "opacity"
-  },
-  {
-    "p": "/1/fader4",
-    "t": "f",
-    "d": "beatstrobe",
-    "f": "opacity"
-  },
-  {
-    "p": "/1/fader5",
-    "t": "f",
-    "d": "topkek",
-    "f": "opacity"
-  },
-  {
     "p": "/1/rotary1",
     "t": "f",
     "d": "solid",
-    "f": "zebra",
-    "e": "speed"
+    "f": "colorize",
+    "e": "hue"
   },
   {
     "p": "/1/rotary2",
     "t": "f",
     "d": "solid",
     "f": "colorize",
-    "e": "hue"
+    "e": "saturation"
+  },
+  {
+    "p": "/1/fader2",
+    "t": "f",
+    "d": "strobe",
+    "f": "opacity"
   },
   {
     "p": "/1/rotary3",
     "t": "i",
-    "d": "olof",
+    "d": "strobe",
     "f": "strobe",
     "e": "segment"
   },
   {
+    "p": "/1/fader3",
+    "t": "f",
+    "d": "beatstrobe",
+    "f": "opacity"
+  },
+  {
+    "p": "/1/fader4",
+    "t": "f",
+    "d": "sparkling",
+    "f": "opacity"
+  },
+  {
     "p": "/1/rotary4",
     "t": "f",
-    "d": "denis",
+    "d": "sparkling",
+    "f": "sparkling",
+    "e": "speed"
+  },
+  {
+    "p": "/1/rotary5",
+    "t": "f",
+    "d": "sparkling",
+    "f": "sparkling",
+    "e": "hue"
+  },
+  {
+    "p": "/1/rotary6",
+    "t": "f",
+    "d": "solid",
+    "f": "sparkling",
+    "e": "saturation"
+  },
+  {
+    "p": "/1/fader5",
+    "t": "f",
+    "d": "zebra",
+    "f": "opacity"
+  },
+  {
+    "p": "/1/rotary7",
+    "t": "f",
+    "d": "zebra",
+    "f": "zebra",
+    "e": "speed"
+  },
+  {
+    "p": "/1/rotary8",
+    "t": "f",
+    "d": "zebra",
     "f": "colorize",
     "e": "hue"
+  },
+  {
+    "p": "/1/rotary9",
+    "t": "f",
+    "d": "zebra",
+    "f": "colorize",
+    "e": "saturation"
+  },
+  {
+    "p": "/1/fader6",
+    "t": "f",
+    "d": "fft",
+    "f": "opacity"
   }
 ]

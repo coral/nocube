@@ -18,8 +18,9 @@ func (g *Colorize) Init() {
 
 func (g *Colorize) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, p pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
 	hue := p.Data.GetScopedFloat64(p.Name, g.Name(), "hue")
+	saturation := p.Data.GetScopedFloat64(p.Name, g.Name(), "saturation")
 	for _, pixel := range generatorResults {
-		col := colorful.Hsl(hue*360, 1.0, pixel.Intensity*0.5)
+		col := colorful.Hsv(hue*360, saturation, pixel.Intensity*0.5)
 		//d := utils.Crush(pixel.Intensity, 0.1)
 		r := col.R
 		g := col.G

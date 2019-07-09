@@ -17,7 +17,7 @@ func (g *Zebra) Generate(pixels []pkg.Pixel, f *frame.F, p pkg.GeneratorParamete
 	// quat := vector.QuaternionToTarget(&vector.Vector3{0, 1, 0}, &vector.Vector3{1, 1, 1})
 	// Make identity vector
 
-	speed := p.Data.GetScopedFloat64(p.Name, g.Name(), "speed")
+	speed := p.Data.GetScopedFloat64(p.Name, g.Name(), "speed") * 10
 	quat45up := vector.QuaternionFromAxisAngle(&vector.Vector3{0, -1, 0}, math.Pi/speed*f.Timepoint)
 	quat45right := vector.QuaternionFromAxisAngle(&vector.Vector3{0, 0, 1}, math.Pi/speed*f.Timepoint*0.3)
 	quat := quat45up.NewMultiply(quat45right)
