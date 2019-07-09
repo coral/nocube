@@ -3,6 +3,7 @@ package colorlookups
 import (
 	"github.com/coral/nocube/pkg"
 	"github.com/coral/nocube/pkg/colorlookups/allwhite"
+	"github.com/coral/nocube/pkg/colorlookups/audiopulse"
 	"github.com/coral/nocube/pkg/colorlookups/colorize"
 	"github.com/coral/nocube/pkg/colorlookups/dummy"
 	"github.com/coral/nocube/pkg/colorlookups/fft"
@@ -19,4 +20,5 @@ var ColorLookups = map[string]pkg.ColorLookup{
 	"tubechange": &tubechange.Tubechange{},
 	"colorize":   &colorize.Colorize{},
 	"sparkling":  &sparkling.Sparkling{},
+	"audiopulse": &audiopulse.AudioPulse{},
 }

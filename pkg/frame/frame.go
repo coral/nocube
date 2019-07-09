@@ -19,7 +19,10 @@ type F struct {
 
 	Phase float64
 
-	FFT []float64
+	FFT                []float64
+	EnergyAverage      float64
+	PeakFrequency      int
+	PeakFrequencyValue float64
 
 	renderHolder *render.Render
 	renderSignal chan render.Update
@@ -79,6 +82,20 @@ func (f *F) Update(u render.Update) {
 
 	f.Index = u.FrameNumber
 	f.FFT = f.audioHolder.FFT
+	var total float64 = 0
+	var peakfreq int = 0
+	var peak float64 = 0
+	for i, value := range f.FFT {
+		if value > peak {
+			peakfreq = i
+			peak = value
+		}
+		total += value
+	}
+	f.EnergyAverage = total / float64(len(f.FFT))
+	f.PeakFrequency = peakfreq
+	f.PeakFrequencyValue = peak
+
 	f.OnUpdate <- f
 }
 

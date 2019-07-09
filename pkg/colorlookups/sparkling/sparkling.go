@@ -39,7 +39,6 @@ func (g *Sparkling) Init() {
 }
 
 func (g *Sparkling) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, p pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
-
 	pixelCount := float64(len(generatorResults))
 	g.maxSpeed = p.Data.GetScopedFloat64(p.Name, g.Name(), "speed")
 	g.sparkHue = p.Data.GetScopedFloat64(p.Name, g.Name(), "hue")

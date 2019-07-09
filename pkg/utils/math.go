@@ -2,6 +2,17 @@ package utils
 
 import "math/rand"
 
+func Clamp(v float64, min float64, max float64) float64 {
+	if v < min {
+		return min
+	}
+	if v > max {
+		return max
+	}
+
+	return v
+}
+
 func Clamp01(v float64) float64 {
 	if v < 0.0 {
 		return 0.0
