@@ -12,6 +12,10 @@ type Passthrough struct {
 
 var _ pkg.ColorLookup = &Passthrough{}
 
+func (g *Passthrough) Init() {
+
+}
+
 func (g *Passthrough) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, parameters pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
 	for _, pixel := range generatorResults {
 

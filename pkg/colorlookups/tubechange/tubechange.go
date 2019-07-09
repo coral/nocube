@@ -15,6 +15,10 @@ type Tubechange struct {
 
 var _ pkg.ColorLookup = &Tubechange{}
 
+func (g *Tubechange) Init() {
+
+}
+
 func (g *Tubechange) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, parameters pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
 	for i, pixel := range generatorResults {
 

@@ -11,6 +11,10 @@ type Dummy struct {
 
 var _ pkg.ColorLookup = &Dummy{}
 
+func (g *Dummy) Init() {
+
+}
+
 func (g *Dummy) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, parameters pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
 	for _, pixel := range generatorResults {
 

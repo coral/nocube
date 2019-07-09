@@ -37,6 +37,7 @@ func New(name string, genName string, colorName string, blendMode string) (*Pipe
 	if c == nil {
 		return nil, fmt.Errorf("Could not find color loookup " + colorName)
 	}
+	c.Init()
 
 	return &Pipeline{
 		Name:      name,

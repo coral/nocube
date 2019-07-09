@@ -10,6 +10,7 @@ import (
 
 type F struct {
 	Timepoint float64
+	Delta     float64
 	Index     uint64
 
 	BeatDuration float64
@@ -66,6 +67,7 @@ func (f *F) Update(u render.Update) {
 	}
 
 	f.BeatCycle = 0.0
+	f.Delta = float64(u.TimeSinceUpdate / time.Millisecond)
 
 	f.Confidence = f.audioHolder.Tempo.Confidence
 	f.Timepoint = float64(u.TimeSinceStart/time.Millisecond) / 1000

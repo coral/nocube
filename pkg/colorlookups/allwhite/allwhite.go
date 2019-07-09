@@ -11,6 +11,10 @@ type AllWhite struct {
 
 var _ pkg.ColorLookup = &AllWhite{}
 
+func (g *AllWhite) Init() {
+
+}
+
 func (g *AllWhite) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, parameters pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
 	p := 0.0
 	for _, _ = range generatorResults {

@@ -13,13 +13,16 @@ type FFT struct {
 
 var _ pkg.ColorLookup = &FFT{}
 
+func (g *FFT) Init() {
+
+}
+
 func (g *FFT) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, parameters pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
 	p := 0.0
 
 	numPix := len(generatorResults)
 	numFFT := len(f.FFT)
 	steps := float64(numFFT) / float64(numPix)
-
 
 	for a, pixel := range generatorResults {
 		index := int(math.Round(float64(a) * steps))

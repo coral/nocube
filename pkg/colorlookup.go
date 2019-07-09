@@ -16,6 +16,7 @@ type ColorLookupResult struct {
 }
 
 type ColorLookup interface {
+	Init()
 	Lookup(generatorResults []GeneratorResult, f *frame.F, parameters ColorLookupParameters) []ColorLookupResult
 	Name() string
 }

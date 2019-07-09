@@ -29,6 +29,10 @@ func init() {
 	y = size.Y
 }
 
+func (g *Palette) Init() {
+
+}
+
 func (g *Palette) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, parameters pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
 
 	for _, _ = range generatorResults {

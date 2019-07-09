@@ -1,5 +1,7 @@
 package utils
 
+import "math/rand"
+
 func Clamp01(v float64) float64 {
 	if v < 0.0 {
 		return 0.0
@@ -45,4 +47,8 @@ func Trigger(v float64, trigger bool) float64 {
 	} else {
 		return 0.0
 	}
+}
+
+func Random(min float64, max float64) float64 {
+	return min + rand.Float64()*(max-min)
 }

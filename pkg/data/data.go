@@ -52,8 +52,9 @@ func (d *Data) SetScopedFloat64(pipeline string, effect string, key string, valu
 
 func (d *Data) GetScopedFloat64(pipeline string, effect string, key string) float64 {
 	d.floatMutex.RLock()
-	if d, m := d.floatcache[pipeline+"_"+effect+"_"+key]; m {
-		return d
+	if val, m := d.floatcache[pipeline+"_"+effect+"_"+key]; m {
+		d.floatMutex.RUnlock()
+		return val
 	}
 	d.floatMutex.RUnlock()
 	val, err := d.db.Get(pipeline + "_" + effect + "_" + key).Result()
@@ -81,8 +82,9 @@ func (d *Data) SetScopedInt64(pipeline string, effect string, key string, value 
 
 func (d *Data) GetScopedInt64(pipeline string, effect string, key string) int64 {
 	d.intMutex.RLock()
-	if d, m := d.intcache[pipeline+"_"+effect+"_"+key]; m {
-		return d
+	if val, m := d.intcache[pipeline+"_"+effect+"_"+key]; m {
+		d.intMutex.RUnlock()
+		return val
 	}
 	d.intMutex.RUnlock()
 	val, err := d.db.Get(pipeline + "_" + effect + "_" + key).Result()

@@ -12,6 +12,10 @@ type Colorize struct {
 
 var _ pkg.ColorLookup = &Colorize{}
 
+func (g *Colorize) Init() {
+
+}
+
 func (g *Colorize) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, p pkg.ColorLookupParameters) (results []pkg.ColorLookupResult) {
 	hue := p.Data.GetScopedFloat64(p.Name, g.Name(), "hue")
 	for _, pixel := range generatorResults {

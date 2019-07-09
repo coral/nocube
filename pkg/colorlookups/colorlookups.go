@@ -7,6 +7,7 @@ import (
 	"github.com/coral/nocube/pkg/colorlookups/dummy"
 	"github.com/coral/nocube/pkg/colorlookups/fft"
 	"github.com/coral/nocube/pkg/colorlookups/palette"
+	"github.com/coral/nocube/pkg/colorlookups/sparkling"
 	"github.com/coral/nocube/pkg/colorlookups/tubechange"
 )
 
@@ -17,4 +18,5 @@ var ColorLookups = map[string]pkg.ColorLookup{
 	"fft":        &fft.FFT{},
 	"tubechange": &tubechange.Tubechange{},
 	"colorize":   &colorize.Colorize{},
+	"sparkling":  &sparkling.Sparkling{},
 }
