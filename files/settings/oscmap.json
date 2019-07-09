@@ -9,7 +9,7 @@
   {
     "p": "/1/fader3",
     "t": "f",
-    "d": "solid",
+    "d": "denis",
     "f": "opacity"
   },
   {
@@ -21,7 +21,7 @@
   {
     "p": "/1/fader5",
     "t": "f",
-    "d": "xd",
+    "d": "topkek",
     "f": "opacity"
   },
   {
@@ -34,15 +34,22 @@
   {
     "p": "/1/rotary2",
     "t": "f",
-    "d": "denis",
+    "d": "solid",
     "f": "colorize",
     "e": "hue"
   },
   {
     "p": "/1/rotary3",
-    "t": "f",
+    "t": "i",
     "d": "olof",
     "f": "strobe",
     "e": "segment"
+  },
+  {
+    "p": "/1/rotary4",
+    "t": "f",
+    "d": "denis",
+    "f": "colorize",
+    "e": "hue"
   }
 ]

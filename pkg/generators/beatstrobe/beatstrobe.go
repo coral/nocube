@@ -13,7 +13,7 @@ var _ pkg.Generator = &BeatStrobe{}
 
 func (g *BeatStrobe) Generate(pixels []pkg.Pixel, f *frame.F, p pkg.GeneratorParameters) (result []pkg.GeneratorResult) {
 	_, r := f.GetSegment(6)
-	isbeat := f.GetBeat(4, 0)
+	isbeat := f.GetBeat(1, 0)
 	for _, pixel := range pixels {
 		if !pixel.Active {
 			result = append(result, pkg.GeneratorResult{

@@ -1,37 +1,37 @@
 [
-  {
-    "Name": "olof",
-    "Opacity": 0,
-    "GeneratorName": "strobe",
-    "ColorLookupName": "dummy",
-    "BlendMode": "add"
-  },
-  {
-    "Name": "beatstrobe",
-    "Opacity": 0,
-    "GeneratorName": "beatstrobe",
-    "ColorLookupName": "tubechange",
-    "BlendMode": "add"
-  },
-  {
-    "Name": "denis",
-    "Opacity": 0,
-    "GeneratorName": "zebra",
-    "ColorLookupName": "colorize",
-    "BlendMode": "screen"
-  },
-  {
-    "Name": "solid",
-    "Opacity": 1.0,
-    "GeneratorName": "solid",
-    "ColorLookupName": "palette",
-    "BlendMode": "add"
-  },
-  {
-    "Name": "fftdemo",
-    "Opacity": 0.0,
-    "GeneratorName": "sense",
-    "ColorLookupName": "dummy",
-    "BlendMode": "add"
-  }
+	{
+		"Name": "olof",
+		"Opacity": 0,
+		"GeneratorName": "strobe",
+		"ColorLookupName": "dummy",
+		"BlendMode": "add"
+	},
+	{
+		"Name": "beatstrobe",
+		"Opacity": 0,
+		"GeneratorName": "beatstrobe",
+		"ColorLookupName": "dummy",
+		"BlendMode": "add"
+	},
+	{
+		"Name": "denis",
+		"Opacity": 1,
+		"GeneratorName": "zebra",
+		"ColorLookupName": "colorize",
+		"BlendMode": "screen"
+	},
+	{
+		"Name": "solid",
+		"Opacity": 0.06677031517028809,
+		"GeneratorName": "solid",
+		"ColorLookupName": "colorize",
+		"BlendMode": "add"
+	},
+	{
+		"Name": "topkek",
+		"Opacity": 0,
+		"GeneratorName": "solid",
+		"ColorLookupName": "dummy",
+		"BlendMode": "add"
+	}
 ]

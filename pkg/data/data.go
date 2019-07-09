@@ -2,6 +2,7 @@ package data
 
 import (
 	"strconv"
+	"sync"
 
 	"github.com/go-redis/redis"
 )
@@ -9,13 +10,17 @@ import (
 type Data struct {
 	db         *redis.Client
 	floatcache map[string]float64
+	floatMutex sync.RWMutex
 	intcache   map[string]int64
+	intMutex   sync.RWMutex
 }
 
 func New() Data {
 	return Data{
 		floatcache: make(map[string]float64),
+		floatMutex: sync.RWMutex{},
 		intcache:   make(map[string]int64),
+		intMutex:   sync.RWMutex{},
 	}
 }
 
@@ -40,19 +45,25 @@ func (d *Data) SetScopedFloat64(pipeline string, effect string, key string, valu
 	if err != nil {
 		panic(err)
 	}
+	d.floatMutex.Lock()
 	d.floatcache[pipeline+"_"+effect+"_"+key] = value
+	d.floatMutex.Unlock()
 }
 
 func (d *Data) GetScopedFloat64(pipeline string, effect string, key string) float64 {
+	d.floatMutex.RLock()
 	if d, m := d.floatcache[pipeline+"_"+effect+"_"+key]; m {
 		return d
 	}
+	d.floatMutex.RUnlock()
 	val, err := d.db.Get(pipeline + "_" + effect + "_" + key).Result()
 	if err != nil {
 		return 0.0
 	}
 	f, _ := strconv.ParseFloat(val, 64)
+	d.floatMutex.Lock()
 	d.floatcache[pipeline+"_"+effect+"_"+key] = f
+	d.floatMutex.Unlock()
 	return f
 
 }
@@ -63,19 +74,25 @@ func (d *Data) SetScopedInt64(pipeline string, effect string, key string, value 
 	if err != nil {
 		panic(err)
 	}
+	d.intMutex.Lock()
 	d.intcache[pipeline+"_"+effect+"_"+key] = value
+	d.intMutex.Unlock()
 }
 
 func (d *Data) GetScopedInt64(pipeline string, effect string, key string) int64 {
+	d.intMutex.RLock()
 	if d, m := d.intcache[pipeline+"_"+effect+"_"+key]; m {
 		return d
 	}
+	d.intMutex.RUnlock()
 	val, err := d.db.Get(pipeline + "_" + effect + "_" + key).Result()
 	if err != nil {
 		return 0
 	}
 	f, _ := strconv.ParseInt(val, 10, 64)
+	d.intMutex.Lock()
 	d.intcache[pipeline+"_"+effect+"_"+key] = f
+	d.intMutex.Unlock()
 	return f
 
 }

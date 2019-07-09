@@ -55,7 +55,7 @@ func New(path string) (*Settings, error) {
 		ns := Settings{}
 		ns.Path = path
 		saveTimer = time.NewTicker(20 * time.Minute)
-		go ns.Save()
+		//go ns.Save()
 		return &ns, nil
 	}
 

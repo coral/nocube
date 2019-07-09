@@ -80,10 +80,10 @@ func (rm *RMan) GetTargetFrameRate() int {
 
 func (rm *RMan) Write(d []pkg.ColorLookupResult) {
 	for _, connectedRAPA102 := range rm.connectedDevices {
-		if connectedRAPA102.Name == "first" {
+		if connectedRAPA102.Name == "second" {
 			connectedRAPA102.PixelStream <- d[:432]
 		}
-		if connectedRAPA102.Name == "second" {
+		if connectedRAPA102.Name == "first" {
 			connectedRAPA102.PixelStream <- d[432:]
 		}
 	}
