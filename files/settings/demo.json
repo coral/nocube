@@ -36,14 +36,14 @@
 	},
 	{
 		"Name": "sparkling",
-		"Opacity": 0,
+		"Opacity": 1,
 		"GeneratorName": "solid",
 		"ColorLookupName": "sparkling",
 		"BlendMode": "add"
 	},
 	{
 		"Name": "audiopulse",
-		"Opacity": 1,
+		"Opacity": 0,
 		"GeneratorName": "solid",
 		"ColorLookupName": "audiopulse",
 		"BlendMode": "add"
