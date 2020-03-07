@@ -42,20 +42,51 @@ func (a *Audio) Init() error {
 	a.Analysis.Init(a.s)
 
 	log.Debug("Init PortAudio")
-	portaudio.Initialize()
+	err := portaudio.Initialize()
+	if err != nil {
+		log.Panic("Could not initialize Portaudio")
+	}
 	log.Debug("PortAudio init success")
+
+	dev, _ := portaudio.Devices()
+
+	var stParam portaudio.StreamParameters
+
+	for _, device := range dev {
+		if device.Name == a.s.Global.Audio.PreferredDevice {
+			log.Debug("Found requested audio device: " + device.Name)
+			var mock *portaudio.DeviceInfo
+			stParam = portaudio.LowLatencyParameters(device, mock)
+		}
+	}
 
 	a.Input.Buffer = make([]float32, a.s.Global.Audio.BufSize)
 
-	t, err := portaudio.OpenDefaultStream(a.s.Global.Audio.Channels,
-		0,
-		a.s.Global.Audio.SampleRate,
-		len(a.Input.Buffer), a.Input.Buffer)
+	var tempStream *portaudio.Stream
+
+	if stParam.Input.Device != nil {
+
+		log.Debug("Opening requested audio device")
+		stParam.Input.Channels = a.s.Global.Audio.Channels
+		stParam.Output.Channels = 0
+		stParam.SampleRate = a.s.Global.Audio.SampleRate
+		stParam.FramesPerBuffer = len(a.Input.Buffer)
+
+		tempStream, err = portaudio.OpenStream(stParam, a.Input.Buffer)
+
+	} else {
+
+		log.Debug("Opening Default audio device")
+		tempStream, err = portaudio.OpenDefaultStream(a.s.Global.Audio.Channels,
+			0,
+			a.s.Global.Audio.SampleRate,
+			len(a.Input.Buffer), a.Input.Buffer)
+	}
 
 	if err != nil {
 		log.Fatalln("Could not open audio stream")
 	}
-	a.Input.Stream = t
+	a.Input.Stream = tempStream
 
 	go func() {
 		for {

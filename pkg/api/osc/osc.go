@@ -41,11 +41,15 @@ func (o *OSC) Init(addr string) error {
 	if err != nil {
 		return err
 	}
-	o.s = &osc.Server{Addr: addr}
+	dis := osc.NewStandardDispatcher()
+	o.s = &osc.Server{
+		Addr:       addr,
+		Dispatcher: dis,
+	}
 
 	for _, d := range oscmapping {
 		m := d
-		o.s.Handle(m.Path, func(msg *osc.Message) {
+		dis.AddMsgHandler(m.Path, func(msg *osc.Message) {
 
 			if m.Function == "opacity" {
 				o.pipelines.ChangeOpacity(m.Destination, AssertFloat64(msg))

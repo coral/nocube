@@ -28,11 +28,12 @@ type Settings struct {
 			InternalTargetFPS int
 		}
 		Audio struct {
-			SampleRate float64
-			Channels   int
-			BufSize    uint
-			BlockSize  uint
-			Beat       struct {
+			PreferredDevice string
+			SampleRate      float64
+			Channels        int
+			BufSize         uint
+			BlockSize       uint
+			Beat            struct {
 				Silence   float32
 				Threshold float32
 			}

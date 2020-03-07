@@ -22,7 +22,7 @@ func (g *Strobe) Generate(pixels []pkg.Pixel, f *frame.F, p pkg.GeneratorParamet
 			})
 		} else {
 			result = append(result, pkg.GeneratorResult{
-				Intensity: utils.Threshold(r, 0.92),
+				Intensity: utils.Threshold(r, 0.90),
 			})
 
 		}
