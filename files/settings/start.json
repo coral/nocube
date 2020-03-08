@@ -28,7 +28,11 @@
 			"FFTSize": 256
 		},
 		"Output": {
-			"ActivatedOutputs": ["RAPA102", "WS", "OPC"],
+			"ActivatedOutputs": [
+				"RAPA102",
+				"WS",
+				"OPC"
+			],
 			"RAPA102": [
 				{
 					"Identifier": "korv",

@@ -5,6 +5,7 @@ import (
 	"github.com/coral/nocube/pkg/generators/beat"
 	"github.com/coral/nocube/pkg/generators/beatstrobe"
 	"github.com/coral/nocube/pkg/generators/edgelord"
+	"github.com/coral/nocube/pkg/generators/runner"
 	"github.com/coral/nocube/pkg/generators/sense"
 	"github.com/coral/nocube/pkg/generators/solid"
 	"github.com/coral/nocube/pkg/generators/strobe"
@@ -21,4 +22,5 @@ var Generators = map[string]pkg.Generator{
 	"solid":      &solid.Solid{},
 	"beatstrobe": &beatstrobe.BeatStrobe{},
 	"sense":      &sense.Sense{},
+	"runner":     &runner.Runner{},
 }

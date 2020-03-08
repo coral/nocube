@@ -20,7 +20,7 @@ func (g *Colorize) Lookup(generatorResults []pkg.GeneratorResult, f *frame.F, p 
 	hue := p.Data.GetScopedFloat64(p.Name, g.Name(), "hue")
 	saturation := p.Data.GetScopedFloat64(p.Name, g.Name(), "saturation")
 	for _, pixel := range generatorResults {
-		col := colorful.Hsv(hue*360, saturation, pixel.Intensity*0.5)
+		col := colorful.Hsv(hue*360, saturation, pixel.Intensity)
 		//d := utils.Crush(pixel.Intensity, 0.1)
 		r := col.R
 		g := col.G

@@ -41,8 +41,8 @@ func (a *analysis) Init(s *settings.Settings) {
 		s.Global.Audio.BufSize,
 		s.Global.Audio.BlockSize,
 		uint(s.Global.Audio.SampleRate))
-	a.Onset.SetSilence(-70.0)
-	a.Onset.SetThreshold(-1.0)
+	a.Onset.SetSilence(-30.0)
+	a.Onset.SetThreshold(-7.0)
 
 	a.FFT = aubio.NewFFT(uint(s.Global.Audio.FFTSize))
 
@@ -50,7 +50,7 @@ func (a *analysis) Init(s *settings.Settings) {
 
 func (a *analysis) Do(b *aubio.SimpleBuffer) {
 	a.processTempo(b)
-	//a.processOnset(b)
+	a.processOnset(b)
 	a.processFFT(b)
 }
 
@@ -78,7 +78,7 @@ func (a *analysis) processOnset(b *aubio.SimpleBuffer) {
 	a.Onset.Do(b)
 	for _, f := range a.Onset.Buffer().Slice() {
 		if f != 0 {
-
+			//fmt.Println("onset")
 		}
 	}
 }

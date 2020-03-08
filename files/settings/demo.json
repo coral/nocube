@@ -7,6 +7,13 @@
 		"BlendMode": "add"
 	},
 	{
+		"Name": "runner",
+		"Opacity": 1,
+		"GeneratorName": "runner",
+		"ColorLookupName": "colorize",
+		"BlendMode": "add"
+	},
+	{
 		"Name": "strobe",
 		"Opacity": 0,
 		"GeneratorName": "strobe",
@@ -36,7 +43,7 @@
 	},
 	{
 		"Name": "sparkling",
-		"Opacity": 1,
+		"Opacity": 0,
 		"GeneratorName": "solid",
 		"ColorLookupName": "sparkling",
 		"BlendMode": "add"
