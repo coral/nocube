@@ -1,3 +1,3 @@
-hello;
-s;
-adsf;
+function render() {
+  return "hello";
+}

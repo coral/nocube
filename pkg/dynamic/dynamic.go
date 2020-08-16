@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"path/filepath"
 
+	v8 "github.com/augustoroman/v8"
 	"github.com/fsnotify/fsnotify"
-	v8 "github.com/joesonw/js8"
 )
 
 type Dynamic struct {
@@ -14,11 +15,13 @@ type Dynamic struct {
 	loadedLibraries string
 	libSnapshot     *v8.Snapshot
 	watcher         *fsnotify.Watcher
+	Patterns        map[string]*DynamicPattern
 }
 
 func New(PatternPath string) *Dynamic {
 	return &Dynamic{
 		patternPath: PatternPath,
+		Patterns:    make(map[string]*DynamicPattern),
 	}
 }
 
@@ -26,7 +29,39 @@ func (d *Dynamic) Initialize() {
 
 	d.startWatcher()
 	d.createV8Snapshot()
+	d.loadPatterns()
 	//defer watcher.Close()
+}
+
+func (d *Dynamic) loadPatterns() {
+
+	files, err := ioutil.ReadDir(d.patternPath)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, s := range files {
+		if s.Name() != "libs" {
+			pfiles, err := ioutil.ReadDir(d.patternPath + "/" + s.Name())
+			if err != nil {
+				fmt.Println(err)
+			}
+			for _, pfile := range pfiles {
+				d.Patterns[pfile.Name()] = CreatePattern(
+					pfile.Name(),
+					d.patternPath+"/"+s.Name()+"/"+pfile.Name(),
+				)
+				pp := pfile.Name()
+				d.Patterns[pp].Load(d.libSnapshot)
+			}
+
+		}
+	}
+
+}
+
+func (d *Dynamic) reloadPattern(name string, path string) {
+	d.Patterns[name].Unload()
+	d.Patterns[name].Load(d.libSnapshot)
 }
 
 func (d *Dynamic) createV8Snapshot() {
@@ -66,7 +101,7 @@ func (d *Dynamic) startWatcher() {
 					return
 				}
 				if event.Op&fsnotify.Write == fsnotify.Write {
-					log.Println("modified file:", event.Name)
+					d.reloadPattern(filepath.Base(event.Name), event.Name)
 				}
 			case err, ok := <-d.watcher.Errors:
 				if !ok {

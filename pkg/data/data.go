@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"strconv"
 	"sync"
 
@@ -9,6 +10,7 @@ import (
 
 type Data struct {
 	db         *redis.Client
+	ctx        context.Context
 	floatcache map[string]float64
 	floatMutex sync.RWMutex
 	intcache   map[string]int64
@@ -30,13 +32,14 @@ func New() Data {
 }
 
 func (d *Data) Init() {
+	d.ctx = context.Background()
 	d.db = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
 
-	_, err := d.db.Ping().Result()
+	_, err := d.db.Ping(d.ctx).Result()
 	if err != nil {
 		panic("No redis")
 	}
@@ -54,7 +57,7 @@ func (d *Data) GetCache() Cache {
 ////FLOAT64
 
 func (d *Data) SetScopedFloat64(pipeline string, effect string, key string, value float64) {
-	err := d.db.Set(pipeline+"_"+effect+"_"+key, value, 0).Err()
+	err := d.db.Set(d.ctx, pipeline+"_"+effect+"_"+key, value, 0).Err()
 	if err != nil {
 		panic(err)
 	}
@@ -70,7 +73,7 @@ func (d *Data) GetScopedFloat64(pipeline string, effect string, key string) floa
 		return val
 	}
 	d.floatMutex.RUnlock()
-	val, err := d.db.Get(pipeline + "_" + effect + "_" + key).Result()
+	val, err := d.db.Get(d.ctx, pipeline+"_"+effect+"_"+key).Result()
 	if err != nil {
 		return 0.0
 	}
@@ -84,7 +87,7 @@ func (d *Data) GetScopedFloat64(pipeline string, effect string, key string) floa
 
 //Int64
 func (d *Data) SetScopedInt64(pipeline string, effect string, key string, value int64) {
-	err := d.db.Set(pipeline+"_"+effect+"_"+key, value, 0).Err()
+	err := d.db.Set(d.ctx, pipeline+"_"+effect+"_"+key, value, 0).Err()
 	if err != nil {
 		panic(err)
 	}
@@ -100,7 +103,7 @@ func (d *Data) GetScopedInt64(pipeline string, effect string, key string) int64 
 		return val
 	}
 	d.intMutex.RUnlock()
-	val, err := d.db.Get(pipeline + "_" + effect + "_" + key).Result()
+	val, err := d.db.Get(d.ctx, pipeline+"_"+effect+"_"+key).Result()
 	if err != nil {
 		return 0
 	}
