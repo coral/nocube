@@ -6,6 +6,7 @@ import (
 	"github.com/coral/nocube/pkg/api"
 	"github.com/coral/nocube/pkg/audio"
 	"github.com/coral/nocube/pkg/data"
+	"github.com/coral/nocube/pkg/dynamic"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/mapping"
 	"github.com/coral/nocube/pkg/output"
@@ -60,6 +61,9 @@ func main() {
 
 	frame := frame.New(rend, a)
 	frame.SetBeat(60.0/30.0, 0)
+
+	dynamic := dynamic.New("../../dynamic/")
+	dynamic.Initialize()
 
 	Pipelines := pipelines.New("demo", &frame, mapping, &db)
 	Pipelines.LoadPipelines()

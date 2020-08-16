@@ -85,6 +85,14 @@ func (a *API) Init(s *settings.Settings) {
 	{
 		api.GET("/pipelines", a.GetPipelines)
 	}
+
+	////////
+	// Data
+	////////
+	{
+		api.GET("/data/cache", a.GetData)
+	}
+
 	////////
 	// Mapping
 	////////

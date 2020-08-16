@@ -15,6 +15,11 @@ type Data struct {
 	intMutex   sync.RWMutex
 }
 
+type Cache struct {
+	FloatCache map[string]float64
+	IntCache   map[string]int64
+}
+
 func New() Data {
 	return Data{
 		floatcache: make(map[string]float64),
@@ -36,6 +41,14 @@ func (d *Data) Init() {
 		panic("No redis")
 	}
 
+}
+
+func (d *Data) GetCache() Cache {
+
+	return Cache{
+		FloatCache: d.floatcache,
+		IntCache:   d.intcache,
+	}
 }
 
 ////FLOAT64
