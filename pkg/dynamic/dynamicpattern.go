@@ -1,6 +1,8 @@
 package dynamic
 
 import (
+	"bytes"
+	"encoding/binary"
 	"fmt"
 	"io/ioutil"
 
@@ -37,11 +39,30 @@ func (dp *DynamicPattern) Load(s *v8.Snapshot) {
 	fmt.Println("Loaded Pattern " + dp.PatternName)
 }
 
+type DM struct {
+	Buf []byte `v8:"arraybuffer"`
+}
+
 func (dp *DynamicPattern) Gen(pixels []pkg.Pixel, f *frame.F) []pkg.Pixel {
 	if dp.Loaded {
-
-		res, _ := dp.v8ctx.Eval(`render("hello")`, "demo.js")
-		fmt.Println("snapshotdemo =", res.String())
+		buf := new(bytes.Buffer)
+		for _, p := range pixels {
+			err := binary.Write(buf, binary.LittleEndian, p.Color)
+			if err != nil {
+				panic(err)
+			}
+		}
+		d := buf.Bytes()
+		dd := DM{
+			Buf: d,
+		}
+		m, err := dp.v8ctx.Create(dd)
+		dp.v8ctx.Global().Set("pixels", m)
+		_, err = dp.v8ctx.Eval(`render()`, "demo.js")
+		if err != nil {
+			panic(err)
+		}
+		//fmt.Println("snapshotdemo =", res.Bytes())
 	}
 
 	return pixels

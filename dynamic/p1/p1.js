@@ -1,3 +1,3 @@
 function render(denis) {
-  return denis;
+  return pixels.Buf;
 }
