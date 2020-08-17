@@ -4,10 +4,10 @@ import (
 	"flag"
 
 	"github.com/coral/nocube/pkg/audio"
-	"github.com/coral/nocube/pkg/chains"
 	"github.com/coral/nocube/pkg/data"
 	"github.com/coral/nocube/pkg/dynamic"
 	"github.com/coral/nocube/pkg/frame"
+	"github.com/coral/nocube/pkg/layers"
 	"github.com/coral/nocube/pkg/mapping"
 	"github.com/coral/nocube/pkg/output"
 	"github.com/coral/nocube/pkg/render"
@@ -64,21 +64,23 @@ func main() {
 	dn := dynamic.New("../../dynamic/")
 	dn.Initialize()
 
-	ch := chains.New("msdn", &frame, mapping, &db, dn)
-	ch.Initialize()
-	//Pipelines.LoadPipelines()
+	layer := layers.New("msdn", &frame, mapping, &db, dn)
+	layer.Initialize()
 
-	/* 	go func() {
+	go func() {
 
 		for {
 			select {
 			case v := <-frame.OnUpdate:
-				p := Pipelines.Process(v)
+				p := layer.Process(v)
 				go output.Write(p)
 			}
 		}
 
-	}() */
+	}()
+	blockChan := make(chan bool)
+
+	_ = <-blockChan
 
 	//api := api.New(mapping, Pipelines, &db)
 	//api.Init(settings)

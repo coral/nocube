@@ -39,11 +39,12 @@ func (dp *DynamicPattern) Load(s *v8.Snapshot) {
 
 func (dp *DynamicPattern) Gen(pixels []pkg.Pixel, f *frame.F) []pkg.Pixel {
 	if dp.Loaded {
-		res, _ := dp.v8ctx.Eval(`render()`, "demo.js")
+
+		res, _ := dp.v8ctx.Eval(`render("hello")`, "demo.js")
 		fmt.Println("snapshotdemo =", res.String())
 	}
 
-	return nil
+	return pixels
 }
 
 func (dp *DynamicPattern) Unload() {

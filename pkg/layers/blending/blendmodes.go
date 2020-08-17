@@ -11,3 +11,11 @@ var BlendModes = map[string]bm{
 }
 
 type bm func([]pkg.Pixel, []pkg.Pixel, float64) []pkg.Pixel
+
+func Opacity(c []pkg.Pixel, opacity float64) []pkg.Pixel {
+	for i, d := range c {
+		c[i].Color = *d.Color.Scale(opacity)
+	}
+
+	return c
+}

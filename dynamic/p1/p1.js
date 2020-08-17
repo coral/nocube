@@ -1,3 +1,3 @@
-function render() {
-  return "hello";
+function render(denis) {
+  return denis;
 }
