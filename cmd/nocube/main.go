@@ -3,14 +3,13 @@ package main
 import (
 	"flag"
 
-	"github.com/coral/nocube/pkg/api"
 	"github.com/coral/nocube/pkg/audio"
+	"github.com/coral/nocube/pkg/chains"
 	"github.com/coral/nocube/pkg/data"
 	"github.com/coral/nocube/pkg/dynamic"
 	"github.com/coral/nocube/pkg/frame"
 	"github.com/coral/nocube/pkg/mapping"
 	"github.com/coral/nocube/pkg/output"
-	"github.com/coral/nocube/pkg/pipelines"
 	"github.com/coral/nocube/pkg/render"
 	"github.com/coral/nocube/pkg/settings"
 
@@ -62,13 +61,14 @@ func main() {
 	frame := frame.New(rend, a)
 	frame.SetBeat(60.0/30.0, 0)
 
-	dynamic := dynamic.New("../../dynamic/")
-	dynamic.Initialize()
+	dn := dynamic.New("../../dynamic/")
+	dn.Initialize()
 
-	Pipelines := pipelines.New("demo", &frame, mapping, &db)
-	Pipelines.LoadPipelines()
+	ch := chains.New("msdn", &frame, mapping, &db, dn)
+	ch.Initialize()
+	//Pipelines.LoadPipelines()
 
-	go func() {
+	/* 	go func() {
 
 		for {
 			select {
@@ -78,9 +78,9 @@ func main() {
 			}
 		}
 
-	}()
+	}() */
 
-	api := api.New(mapping, Pipelines, &db)
-	api.Init(settings)
+	//api := api.New(mapping, Pipelines, &db)
+	//api.Init(settings)
 
 }
