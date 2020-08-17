@@ -5,7 +5,7 @@ import (
 	"github.com/coral/nocube/pkg/utils"
 )
 
-func Add(op1 []pkg.ColorLookupResult, op2 []pkg.ColorLookupResult, val float64) []pkg.ColorLookupResult {
+func Add(op1 []pkg.Pixel, op2 []pkg.Pixel, val float64) []pkg.Pixel {
 	for i, e := range op1 {
 		//d := op2[i].Color.Add(&e.Color
 		r := utils.Clamp01(e.Color[0] + op2[i].Color[0])

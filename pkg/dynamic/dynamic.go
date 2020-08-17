@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	v8 "github.com/augustoroman/v8"
+	"github.com/coral/nocube/pkg"
 	"github.com/fsnotify/fsnotify"
 )
 
@@ -31,6 +32,14 @@ func (d *Dynamic) Initialize() {
 	d.createV8Snapshot()
 	d.loadPatterns()
 	//defer watcher.Close()
+}
+
+func (d *Dynamic) CreateSteps() []pkg.Step {
+	var steps []pkg.Step
+	for _, m := range d.Patterns {
+		steps = append(steps, m)
+	}
+	return steps
 }
 
 func (d *Dynamic) loadPatterns() {

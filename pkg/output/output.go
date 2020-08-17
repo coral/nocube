@@ -11,7 +11,7 @@ import (
 type Output interface {
 	Init()
 	ModuleName() string
-	Write([]pkg.ColorLookupResult)
+	Write([]pkg.Pixel)
 
 	SetTargetFrameRate(int)
 	GetTargetFrameRate() int
@@ -19,7 +19,7 @@ type Output interface {
 
 type Controller struct {
 	ActivatedOutputs []string
-	PixelStream      chan []pkg.ColorLookupResult
+	PixelStream      chan []pkg.Pixel
 
 	o []Output
 	s *settings.Settings
@@ -51,7 +51,7 @@ func (l *Controller) Init() {
 }
 
 //TODO make it actually resolve mapping here
-func (l *Controller) Write(d []pkg.ColorLookupResult) {
+func (l *Controller) Write(d []pkg.Pixel) {
 	for _, ao := range l.o {
 		ao.Write(d)
 	}

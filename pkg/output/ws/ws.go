@@ -17,7 +17,7 @@ type WS struct {
 
 type writeBuffer struct {
 	conn   *websocket.Conn
-	buffer chan []pkg.ColorLookupResult
+	buffer chan []pkg.Pixel
 }
 
 func New() *WS {
@@ -43,7 +43,7 @@ func (ws *WS) GetTargetFrameRate() int {
 	return ws.targetFrameRate
 }
 
-func (ws *WS) Write(d []pkg.ColorLookupResult) {
+func (ws *WS) Write(d []pkg.Pixel) {
 
 	for _, c := range ws.writeBuffers {
 
@@ -70,7 +70,7 @@ func (ws *WS) initWS(w http.ResponseWriter, r *http.Request) {
 
 	newBuffer := writeBuffer{
 		conn:   c,
-		buffer: make(chan []pkg.ColorLookupResult, 1),
+		buffer: make(chan []pkg.Pixel, 1),
 	}
 
 	ws.writeBuffers = append(ws.writeBuffers, newBuffer)

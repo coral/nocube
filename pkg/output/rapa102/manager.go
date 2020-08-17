@@ -40,7 +40,7 @@ func (rm *RMan) Init() {
 				Name:        entry.ServiceRecord.Instance,
 				IP:          entry.AddrIPv4[0],
 				Port:        entry.Port,
-				PixelStream: make(chan []pkg.ColorLookupResult),
+				PixelStream: make(chan []pkg.Pixel),
 			}
 
 			rm.registeredDevices = append(rm.registeredDevices, d)
@@ -78,7 +78,7 @@ func (rm *RMan) GetTargetFrameRate() int {
 	return rm.targetFrameRate
 }
 
-func (rm *RMan) Write(d []pkg.ColorLookupResult) {
+func (rm *RMan) Write(d []pkg.Pixel) {
 	for _, connectedRAPA102 := range rm.connectedDevices {
 		if connectedRAPA102.Name == "second" {
 			connectedRAPA102.PixelStream <- d[:432]

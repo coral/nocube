@@ -10,4 +10,4 @@ var BlendModes = map[string]bm{
 	"subtract": Subtract,
 }
 
-type bm func([]pkg.ColorLookupResult, []pkg.ColorLookupResult, float64) []pkg.ColorLookupResult
+type bm func([]pkg.Pixel, []pkg.Pixel, float64) []pkg.Pixel

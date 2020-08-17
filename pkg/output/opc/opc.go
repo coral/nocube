@@ -16,7 +16,7 @@ type OPC struct {
 
 type writeBuffer struct {
 	conn   *websocket.Conn
-	buffer chan []pkg.ColorLookupResult
+	buffer chan []pkg.Pixel
 }
 
 func New() *OPC {
@@ -49,7 +49,7 @@ func (ws *OPC) GetTargetFrameRate() int {
 	return ws.targetFrameRate
 }
 
-func (ws *OPC) Write(d []pkg.ColorLookupResult) {
+func (ws *OPC) Write(d []pkg.Pixel) {
 	if ws.connected {
 		m := opc.NewMessage(0)
 		m.SetLength(3 * uint16(len(d)))

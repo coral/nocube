@@ -9,8 +9,9 @@ import (
 type Pixel struct {
 	Index      int64          `json:"I"`
 	Active     bool           `json:"A"`
-	Coordinate vector.Vector3 `json:"C"`
+	Coordinate vector.Vector3 `json:"O"`
 	Normal     vector.Vector3 `json:"N"`
+	Color      vector.Vector3 `json:"C"`
 }
 
 // Sides

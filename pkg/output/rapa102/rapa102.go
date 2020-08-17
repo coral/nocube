@@ -17,7 +17,7 @@ type RAPA102 struct {
 	Port int
 	conn *websocket.Conn
 
-	PixelStream chan []pkg.ColorLookupResult
+	PixelStream chan []pkg.Pixel
 }
 
 func (r *RAPA102) Connect() error {
