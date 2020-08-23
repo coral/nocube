@@ -1,4 +1,8 @@
-function render(denis) {
+function beforeRender() {
+  console.log("LOL");
+}
+
+function render3D(denis) {
   var x = new Float64Array(mapping.Length);
 
   mapping.Pixels.forEach(pixel);

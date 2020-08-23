@@ -90,7 +90,7 @@ func (dp *DynamicPattern) Gen(pixels []pkg.Pixel, f *frame.F) []pkg.Pixel {
 	if dp.Loaded {
 
 		fmt.Println(dp.Loaded)
-		res, err := dp.v8ctx.Eval(`render()`, "demo.js")
+		res, err := dp.v8ctx.Eval(`_.isNumber(3);`, "demo.js")
 		if err != nil {
 			fmt.Println(err)
 			//panic(err)

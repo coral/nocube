@@ -93,6 +93,8 @@ func (d *Dynamic) createV8Snapshot() {
 
 	}
 
+	fmt.Println(d.loadedLibraries)
+
 	d.libSnapshot = v8.CreateSnapshot(d.loadedLibraries)
 
 }
