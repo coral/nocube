@@ -135,6 +135,11 @@ func (dp *DynamicPattern) Load(m []pkg.Pixel) {
 
 	dp.v8ctx.Global().Set("mapping", v8map)
 
+	fmt.Println(dp.PatternName)
+	if dp.PatternName == "cyclon.js" {
+		fmt.Println(string(code))
+	}
+
 	dp.v8ctx.Eval(string(code), dp.PatternName)
 
 	if dp.Console {
@@ -148,7 +153,7 @@ func (dp *DynamicPattern) Gen(mapping []pkg.Pixel, f *frame.F) []pkg.Pixel {
 
 	if dp.Loaded {
 
-		res, err := dp.v8ctx.Eval(`pattern.render();`, "demo.js")
+		res, err := dp.v8ctx.Eval(`pattern.render();`, dp.PatternName)
 		if err != nil {
 			fmt.Println(err)
 			//panic(err)

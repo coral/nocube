@@ -1,9 +1,10 @@
 var x = new Float64Array(mapping.Length * 3);
 
 var numPixels = mapping.Length;
+var pixelCount = mapping.Length;
 
 module.exports.render = function () {
-  beforeRender(mapping.Length);
+  beforeRender(0.5);
 
   mapping.Pixels.forEach((pixel) =>
     render3D(pixel.Index, pixel.X, pixel.Y, pixel.Z)

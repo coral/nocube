@@ -60,7 +60,7 @@ func (c *Layers) Initialize() {
 		BlendMode: "add",
 		Opacity:   1.0,
 		Sequence: []Link{Link{
-			Step:      c.AvaliableSteps["p1.js"],
+			Step:      c.AvaliableSteps["cyclon.js"],
 			BlendMode: "add",
 			Opacity:   1.0,
 		}},
