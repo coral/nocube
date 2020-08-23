@@ -31,7 +31,7 @@ func (d *Dynamic) Initialize(m []pkg.Pixel) {
 
 	d.mapping = m
 
-	d.startWatcher()
+	//d.startWatcher()
 	d.createV8Snapshot()
 	d.loadPatterns()
 	//defer watcher.Close()
@@ -52,18 +52,22 @@ func (d *Dynamic) loadPatterns() {
 		fmt.Println(err)
 	}
 	for _, s := range files {
-		if s.Name() != "libs" {
+		if s.Name() != "node_modules" && s.IsDir() {
+
 			pfiles, err := ioutil.ReadDir(d.patternPath + "/" + s.Name())
 			if err != nil {
 				fmt.Println(err)
 			}
 			for _, pfile := range pfiles {
-				d.Patterns[pfile.Name()] = CreatePattern(
-					pfile.Name(),
-					d.patternPath+"/"+s.Name()+"/"+pfile.Name(),
-				)
-				pp := pfile.Name()
-				d.Patterns[pp].Load(d.libSnapshot, d.mapping)
+				if filepath.Ext(pfile.Name()) == ".js" {
+					d.Patterns[pfile.Name()] = CreatePattern(
+						pfile.Name(),
+						d.patternPath+"/"+s.Name()+"/"+pfile.Name(),
+						d.patternPath,
+					)
+					pp := pfile.Name()
+					d.Patterns[pp].Load(d.libSnapshot, d.mapping)
+				}
 			}
 
 		}
@@ -77,25 +81,28 @@ func (d *Dynamic) reloadPattern(name string, path string) {
 }
 
 func (d *Dynamic) createV8Snapshot() {
-	files, err := ioutil.ReadDir(d.patternPath + "/libs/")
-	if err != nil {
-		log.Fatal(err)
-	}
+	// files, err := ioutil.ReadDir(d.patternPath + "/libs/")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	for _, file := range files {
+	// for _, file := range files {
 
-		dat, err := ioutil.ReadFile(d.patternPath + "/libs/" + file.Name())
-		if err != nil {
-			panic(err)
-		}
+	// 	if !file.IsDir() {
 
-		d.loadedLibraries = d.loadedLibraries + string(dat)
+	// 		dat, err := ioutil.ReadFile(d.patternPath + "/libs/" + file.Name())
+	// 		if err != nil {
+	// 			panic(err)
+	// 		}
 
-	}
+	// 		d.loadedLibraries = d.loadedLibraries + string(dat)
+	// 	}
 
-	fmt.Println(d.loadedLibraries)
+	// }
 
-	d.libSnapshot = v8.CreateSnapshot(d.loadedLibraries)
+	d.libSnapshot = v8.CreateSnapshot("")
+
+	fmt.Println("CREATED SNAPSHOT")
 
 }
 

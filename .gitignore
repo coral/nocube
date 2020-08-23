@@ -19,3 +19,6 @@ main
 temp
 temp/
 temp/*
+
+
+node_modules

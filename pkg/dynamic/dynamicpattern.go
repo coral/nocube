@@ -3,9 +3,12 @@ package dynamic
 import (
 	"encoding/binary"
 	"fmt"
-	"io/ioutil"
 	"math"
 	"os"
+	"os/exec"
+	"path/filepath"
+
+	log "github.com/sirupsen/logrus"
 
 	v8 "github.com/augustoroman/v8"
 	"github.com/augustoroman/v8/v8console"
@@ -16,7 +19,7 @@ import (
 type DynamicPattern struct {
 	PatternName string
 	path        string
-	code        string
+	modulepath  string
 	v8isolate   *v8.Isolate
 	v8ctx       *v8.Context
 	Loaded      bool
@@ -24,10 +27,11 @@ type DynamicPattern struct {
 	buffer []float64
 }
 
-func CreatePattern(Name string, path string) *DynamicPattern {
+func CreatePattern(Name string, path string, modulepath string) *DynamicPattern {
 	return &DynamicPattern{
 		PatternName: Name,
 		path:        path,
+		modulepath:  modulepath,
 	}
 }
 
@@ -48,12 +52,26 @@ func (dp *DynamicPattern) Load(s *v8.Snapshot, m []pkg.Pixel) {
 
 	dp.buffer = make([]float64, len(m))
 
-	code, err := ioutil.ReadFile(dp.path)
+	mp, err := filepath.Abs(dp.modulepath)
 	if err != nil {
-		panic(err)
+		fmt.Println("Could not get absolute path of js file")
 	}
 
-	dp.v8isolate = v8.NewIsolateWithSnapshot(s)
+	ap, err := filepath.Abs(dp.path)
+	if err != nil {
+		fmt.Println("Could not get absolute path of js file")
+	}
+	code, err := exec.Command("/usr/local/bin/node", mp+"/node_modules/browserify/bin/cmd.js", ap, "--s", "pattern").Output()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"Error": err,
+			"File":  ap,
+		}).Error("Could not execute browserify")
+
+		return
+	}
+
+	dp.v8isolate = v8.NewIsolate()
 	dp.v8ctx = dp.v8isolate.NewContext()
 
 	var tm []V8Mapping
@@ -74,7 +92,7 @@ func (dp *DynamicPattern) Load(s *v8.Snapshot, m []pkg.Pixel) {
 
 	v8map, err := dp.v8ctx.Create(mapdata)
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 
 	dp.v8ctx.Global().Set("mapping", v8map)
@@ -89,8 +107,7 @@ func (dp *DynamicPattern) Load(s *v8.Snapshot, m []pkg.Pixel) {
 func (dp *DynamicPattern) Gen(pixels []pkg.Pixel, f *frame.F) []pkg.Pixel {
 	if dp.Loaded {
 
-		fmt.Println(dp.Loaded)
-		res, err := dp.v8ctx.Eval(`_.isNumber(3);`, "demo.js")
+		res, err := dp.v8ctx.Eval(`pattern.beforeRender();`, "demo.js")
 		if err != nil {
 			fmt.Println(err)
 			//panic(err)

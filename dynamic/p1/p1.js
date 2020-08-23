@@ -1,6 +1,8 @@
-function beforeRender() {
+var _ = require("lodash");
+
+module.exports.beforeRender = function () {
   console.log("LOL");
-}
+};
 
 function render3D(denis) {
   var x = new Float64Array(mapping.Length);
