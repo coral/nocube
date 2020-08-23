@@ -6,7 +6,6 @@ import (
 	"log"
 	"path/filepath"
 
-	v8 "github.com/augustoroman/v8"
 	"github.com/coral/nocube/pkg"
 	"github.com/fsnotify/fsnotify"
 )
@@ -14,7 +13,6 @@ import (
 type Dynamic struct {
 	patternPath     string
 	loadedLibraries string
-	libSnapshot     *v8.Snapshot
 	watcher         *fsnotify.Watcher
 	Patterns        map[string]*DynamicPattern
 	mapping         []pkg.Pixel
@@ -31,8 +29,7 @@ func (d *Dynamic) Initialize(m []pkg.Pixel) {
 
 	d.mapping = m
 
-	//d.startWatcher()
-	d.createV8Snapshot()
+	d.startWatcher()
 	d.loadPatterns()
 	//defer watcher.Close()
 }
@@ -52,7 +49,7 @@ func (d *Dynamic) loadPatterns() {
 		fmt.Println(err)
 	}
 	for _, s := range files {
-		if s.Name() != "node_modules" && s.IsDir() {
+		if s.Name() != "node_modules" && s.Name() != "system" && s.IsDir() {
 
 			pfiles, err := ioutil.ReadDir(d.patternPath + "/" + s.Name())
 			if err != nil {
@@ -66,7 +63,7 @@ func (d *Dynamic) loadPatterns() {
 						d.patternPath,
 					)
 					pp := pfile.Name()
-					d.Patterns[pp].Load(d.libSnapshot, d.mapping)
+					d.Patterns[pp].Load(d.mapping)
 				}
 			}
 
@@ -77,33 +74,7 @@ func (d *Dynamic) loadPatterns() {
 
 func (d *Dynamic) reloadPattern(name string, path string) {
 	d.Patterns[name].Unload()
-	d.Patterns[name].Load(d.libSnapshot, d.mapping)
-}
-
-func (d *Dynamic) createV8Snapshot() {
-	// files, err := ioutil.ReadDir(d.patternPath + "/libs/")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// for _, file := range files {
-
-	// 	if !file.IsDir() {
-
-	// 		dat, err := ioutil.ReadFile(d.patternPath + "/libs/" + file.Name())
-	// 		if err != nil {
-	// 			panic(err)
-	// 		}
-
-	// 		d.loadedLibraries = d.loadedLibraries + string(dat)
-	// 	}
-
-	// }
-
-	d.libSnapshot = v8.CreateSnapshot("")
-
-	fmt.Println("CREATED SNAPSHOT")
-
+	d.Patterns[name].Load(d.mapping)
 }
 
 func (d *Dynamic) startWatcher() {
@@ -139,7 +110,7 @@ func (d *Dynamic) startWatcher() {
 	}
 
 	for _, s := range files {
-		if s.Name() != "libs" {
+		if s.Name() != "node_modules" && s.Name() != "system" && s.IsDir() {
 			fmt.Println("Watching: " + s.Name())
 			err = d.watcher.Add(d.patternPath + "/" + s.Name())
 			if err != nil {
