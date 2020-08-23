@@ -17,6 +17,7 @@ type Dynamic struct {
 	libSnapshot     *v8.Snapshot
 	watcher         *fsnotify.Watcher
 	Patterns        map[string]*DynamicPattern
+	mapping         []pkg.Pixel
 }
 
 func New(PatternPath string) *Dynamic {
@@ -26,7 +27,9 @@ func New(PatternPath string) *Dynamic {
 	}
 }
 
-func (d *Dynamic) Initialize() {
+func (d *Dynamic) Initialize(m []pkg.Pixel) {
+
+	d.mapping = m
 
 	d.startWatcher()
 	d.createV8Snapshot()
@@ -60,7 +63,7 @@ func (d *Dynamic) loadPatterns() {
 					d.patternPath+"/"+s.Name()+"/"+pfile.Name(),
 				)
 				pp := pfile.Name()
-				d.Patterns[pp].Load(d.libSnapshot)
+				d.Patterns[pp].Load(d.libSnapshot, d.mapping)
 			}
 
 		}
@@ -70,7 +73,7 @@ func (d *Dynamic) loadPatterns() {
 
 func (d *Dynamic) reloadPattern(name string, path string) {
 	d.Patterns[name].Unload()
-	d.Patterns[name].Load(d.libSnapshot)
+	d.Patterns[name].Load(d.libSnapshot, d.mapping)
 }
 
 func (d *Dynamic) createV8Snapshot() {

@@ -62,7 +62,7 @@ func main() {
 	frame.SetBeat(60.0/30.0, 0)
 
 	dn := dynamic.New("../../dynamic/")
-	dn.Initialize()
+	dn.Initialize(mapping.Coordinates)
 
 	layer := layers.New("msdn", &frame, mapping, &db, dn)
 	layer.Initialize()
