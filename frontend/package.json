@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "three": "^0.101.1",
+    "three": "^0.125.0",
     "vue": "^2.5.22",
     "vue-native-websocket": "^2.0.12",
     "vue-router": "^3.0.1"
