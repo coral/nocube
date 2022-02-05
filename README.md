@@ -1,6 +1,6 @@
 # nocube
 
-insanely over-engineered software to control APA102 LEDs 4Head
+insanely over-engineered software to control APA102 LEDs 5Head
 
 this is not a software for cubes.
 
